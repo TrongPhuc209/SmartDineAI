@@ -5,12 +5,17 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import com.SmartDineAI.dto.response.ApiResponse;
+
 @ControllerAdvice
 public class GlobalExceptionHandler {
     
     @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<String> handleRuntimeExceptions(RuntimeException exception) {
-        return ResponseEntity.badRequest().body(exception.getMessage());
+    public ResponseEntity<ApiResponse> handleRuntimeExceptions(RuntimeException exception) {
+        ApiResponse response = new ApiResponse();
+        response.setCode(400);
+        response.setMessage(exception.getMessage());
+        return ResponseEntity.badRequest().body(response);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

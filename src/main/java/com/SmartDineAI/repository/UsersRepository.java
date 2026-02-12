@@ -7,5 +7,5 @@ import com.SmartDineAI.entity.Users;
 
 @Repository
 public interface UsersRepository extends JpaRepository<Users, Long>{
-    
+    boolean existsByUsername(String username);
 }

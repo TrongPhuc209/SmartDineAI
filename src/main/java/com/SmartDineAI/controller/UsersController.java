@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.SmartDineAI.dto.request.CreateUser;
 import com.SmartDineAI.dto.request.UpdateUser;
+import com.SmartDineAI.dto.response.ApiResponse;
 import com.SmartDineAI.entity.Users;
 import com.SmartDineAI.service.UsersService;
 
@@ -26,23 +27,32 @@ public class UsersController {
     private UsersService usersService;
 
     @PostMapping
-    public Users createUser(@RequestBody @Valid CreateUser request){
-        return usersService.createUser(request);
+    public ApiResponse<Users> createUser(@RequestBody @Valid CreateUser request){
+        ApiResponse<Users> response = new ApiResponse<>();
+        response.setResult(usersService.createUser(request));
+        return response;
     }
 
     @GetMapping
-    public List<Users> getAllUsers(){
-        return usersService.getAllUsers();
+    public ApiResponse<List<Users>> getAllUsers(){
+        ApiResponse<List<Users>> response = new ApiResponse<>();
+        response.setResult(usersService.getAllUsers());
+        return response;
     }
 
     @GetMapping("/{userId}")
-    public Users getUserById(@PathVariable Long userId){
-        return usersService.getUserById(userId);
+    public ApiResponse<Users> getUserById(@PathVariable Long userId){
+        ApiResponse<Users> response = new ApiResponse<>();
+        response.setResult(usersService.getUserById(userId));
+        return response;
     }
 
     @PutMapping("/{userId}")
-    public Users updateUser(@PathVariable @Valid Long userId, @RequestBody UpdateUser request){
-        return usersService.updateUser(userId, request);
+    public ApiResponse<Users> updateUser(@PathVariable @Valid Long userId, @RequestBody UpdateUser request){
+        ApiResponse<Users> response = new ApiResponse<>();
+        response.setResult(usersService.updateUser(userId, request));
+
+        return response;
     }
 
     @DeleteMapping("/{userId}")
