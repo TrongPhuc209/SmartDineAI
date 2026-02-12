@@ -17,6 +17,8 @@ import com.SmartDineAI.dto.request.UpdateUser;
 import com.SmartDineAI.entity.Users;
 import com.SmartDineAI.service.UsersService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/users")
 public class UsersController {
@@ -24,7 +26,7 @@ public class UsersController {
     private UsersService usersService;
 
     @PostMapping
-    public Users createUser(@RequestBody CreateUser request){
+    public Users createUser(@RequestBody @Valid CreateUser request){
         return usersService.createUser(request);
     }
 
@@ -39,7 +41,7 @@ public class UsersController {
     }
 
     @PutMapping("/{userId}")
-    public Users updateUser(@PathVariable Long userId, @RequestBody UpdateUser request){
+    public Users updateUser(@PathVariable @Valid Long userId, @RequestBody UpdateUser request){
         return usersService.updateUser(userId, request);
     }
 
@@ -47,5 +49,10 @@ public class UsersController {
     public String deleteUser(@PathVariable Long userId){
         usersService.deleteUser(userId);
         return "User deleted successfully";
+    }
+
+    @DeleteMapping("/all/{passwordAdmin}")
+    public String deleteAllUsers(@PathVariable String passwordAdmin){
+        return usersService.deleteAllUsers(passwordAdmin);
     }
 }

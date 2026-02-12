@@ -26,6 +26,7 @@ public class UsersService {
         user.setUsername(request.getUsername());
         user.setPassword(request.getPassword());
         user.setEmail(request.getEmail());
+        user.setPhoneNumber(request.getPhoneNumber());
         user.setFullName(request.getFullName());
         user.setRoleId(role);
 
@@ -55,5 +56,13 @@ public class UsersService {
     
     public void deleteUser(Long userId){
         usersRepository.deleteById(userId);
+    }
+
+    public String deleteAllUsers(String passwordAdmin){
+        if(passwordAdmin.equals("admin333")){
+            usersRepository.deleteAll();
+            return "All users deleted successfully";
+        }
+        throw new RuntimeException("Invalid admin password");
     }
 }
