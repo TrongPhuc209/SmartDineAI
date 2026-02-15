@@ -9,6 +9,8 @@ import com.SmartDineAI.dto.request.CreateUser;
 import com.SmartDineAI.dto.request.UpdateUser;
 import com.SmartDineAI.entity.Role;
 import com.SmartDineAI.entity.Users;
+import com.SmartDineAI.exception.AppException;
+import com.SmartDineAI.exception.ErrorCode;
 import com.SmartDineAI.repository.RoleRepository;
 import com.SmartDineAI.repository.UsersRepository;
 
@@ -42,11 +44,11 @@ public class UsersService {
     }
 
     public Users getUserById(Long userId){
-        return usersRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        return usersRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
     }
 
     public Users updateUser(Long userId, UpdateUser request){
-        Users user = usersRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        Users user = usersRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
         user.setUsername(request.getUsername());
         user.setPassword(request.getPassword());

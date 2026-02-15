@@ -10,6 +10,17 @@ import com.SmartDineAI.dto.response.ApiResponse;
 @ControllerAdvice
 public class GlobalExceptionHandler {
     
+    @ExceptionHandler(AppException.class)
+    public ResponseEntity<ApiResponse> handleAppExceptions(AppException exception) {
+        ErrorCode errorCode = exception.getErrorCode();
+        ApiResponse response = new ApiResponse();
+
+        response.setCode(errorCode.getStatus());
+        response.setMessage(errorCode.getMessage());
+
+        return ResponseEntity.badRequest().body(response);
+    }
+
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ApiResponse> handleRuntimeExceptions(RuntimeException exception) {
         ApiResponse response = new ApiResponse();
@@ -17,7 +28,7 @@ public class GlobalExceptionHandler {
         response.setMessage(exception.getMessage());
         return ResponseEntity.badRequest().body(response);
     }
-
+    
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<String> handleValidationExceptions(MethodArgumentNotValidException exception) {
         return ResponseEntity.badRequest().body(exception.getFieldError().getDefaultMessage());    
