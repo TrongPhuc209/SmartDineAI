@@ -18,7 +18,7 @@ public class GlobalExceptionHandler {
         response.setCode(errorCode.getStatus());
         response.setMessage(errorCode.getMessage());
 
-        return ResponseEntity.badRequest().body(response);
+        return ResponseEntity.status(errorCode.getStatus()).body(response);
     }
 
     @ExceptionHandler(RuntimeException.class)
@@ -30,7 +30,14 @@ public class GlobalExceptionHandler {
     }
     
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<String> handleValidationExceptions(MethodArgumentNotValidException exception) {
-        return ResponseEntity.badRequest().body(exception.getFieldError().getDefaultMessage());    
+    public ResponseEntity<ApiResponse> handleValidationExceptions(MethodArgumentNotValidException exception) {
+        String keyStatus = exception.getFieldError().getDefaultMessage();
+        ErrorCode errorCode = ErrorCode.valueOf(keyStatus);
+        ApiResponse response = new ApiResponse();
+
+        response.setCode(errorCode.getStatus());
+        response.setMessage(errorCode.getMessage());
+        
+        return ResponseEntity.status(errorCode.getStatus()).body(response);    
     }
 }

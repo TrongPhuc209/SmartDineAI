@@ -25,10 +25,10 @@ public class UsersService {
         Users user = new Users();
 
         if(usersRepository.existsByUsername(request.getUsername())){
-            throw new RuntimeException("Username already exists");
+            throw new AppException(ErrorCode.USER_ALREADY_EXISTS);
         }
 
-        Role role = roleRepository.findById(2L).orElseThrow(() -> new RuntimeException("Role not found"));
+        Role role = roleRepository.findById(2L).orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
         user.setUsername(request.getUsername());
         user.setPassword(request.getPassword());
         user.setEmail(request.getEmail());

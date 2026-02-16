@@ -10,20 +10,20 @@ import lombok.Setter;
 @Getter
 @Setter
 public class UpdateUser {
-    @Size(min = 3, max = 50, message = "Username must be between 3 and 50 characters")
+    @Size(min = 3, max = 50, message = "INVALID_FORMAT_USERNAME")
     private String username;
 
-    @Size(min = 6, max = 100, message = "Password must be between 6 and 100 characters")
+    @Size(min = 6, max = 100, message = "INVALID_FORMAT_PASSWORD")
     private String password;
 
-    @NotNull(message = "Full name cannot be null")
+    @NotNull(message = "MISSING_REQUIRED_FIELD")
     private String fullName;
 
-    @Email(message = "Email should be valid")
+    @Email(message = "INVALID_FORMAT_EMAIL")
     private String email;
 
-    @Digits(integer = 15, fraction = 0, message = "Phone number must be numeric and up to 15 digits")
+    @Digits(integer = 15, fraction = 0, message = "INVALID_FORMAT_PHONE_NUMBER")
     private String phoneNumber;
-    
+
     private Boolean isActive;
 }

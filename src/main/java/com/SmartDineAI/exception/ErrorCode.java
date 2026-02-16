@@ -5,7 +5,10 @@ public enum ErrorCode {
     VALIDATION_FAILED(400, "Validation failed"),
     ROLE_NOT_EXIST(400, "Role does not exist"),
     INVALID_ROLE(400, "Invalid role"),
-    INVALID_FORMAT(400, "Invalid format"),
+    INVALID_FORMAT_USERNAME(400, "Invalid username format. Must be 3-50 characters"),
+    INVALID_FORMAT_PASSWORD(400, "Invalid password format. Must be 6-100 characters"),
+    INVALID_FORMAT_EMAIL(400, "Invalid email format"),
+    INVALID_FORMAT_PHONE_NUMBER(400, "Invalid phone number format. Must be numeric and up to 15 digits"),
     MISSING_REQUIRED_FIELD(400, "Missing required field"),
 
     UNAUTHENTICATED(401, "Authentication required"),
