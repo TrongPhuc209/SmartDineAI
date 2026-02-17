@@ -32,8 +32,14 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse> handleValidationExceptions(MethodArgumentNotValidException exception) {
         String keyStatus = exception.getFieldError().getDefaultMessage();
-        ErrorCode errorCode = ErrorCode.valueOf(keyStatus);
         ApiResponse response = new ApiResponse();
+        ErrorCode errorCode = ErrorCode.INVALID_KEY;
+        
+        try {
+            errorCode = ErrorCode.valueOf(keyStatus);
+        } catch (IllegalArgumentException e) {
+        }
+
 
         response.setCode(errorCode.getStatus());
         response.setMessage(errorCode.getMessage());

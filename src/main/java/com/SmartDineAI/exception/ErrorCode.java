@@ -1,6 +1,9 @@
 package com.SmartDineAI.exception;
 
 public enum ErrorCode {
+
+    INVALID_KEY(999, "Invalid key in request"),
+
     INVALID_REQUEST(400, "Invalid request data"),
     VALIDATION_FAILED(400, "Validation failed"),
     ROLE_NOT_EXIST(400, "Role does not exist"),
