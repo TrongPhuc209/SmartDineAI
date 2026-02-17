@@ -3,52 +3,56 @@ package com.SmartDineAI.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.SmartDineAI.dto.request.CreateUser;
 import com.SmartDineAI.dto.request.UpdateUser;
 import com.SmartDineAI.entity.Role;
-import com.SmartDineAI.entity.Users;
+import com.SmartDineAI.entity.User;
 import com.SmartDineAI.exception.AppException;
 import com.SmartDineAI.exception.ErrorCode;
 import com.SmartDineAI.repository.RoleRepository;
-import com.SmartDineAI.repository.UsersRepository;
+import com.SmartDineAI.repository.UserRepository;
 
 @Service
-public class UsersService {
+public class UserService {
     @Autowired
-    private UsersRepository usersRepository;
+    private UserRepository userRepository;
     @Autowired
     private RoleRepository roleRepository;
 
-    public Users createUser(CreateUser request){
-        Users user = new Users();
+    public User createUser(CreateUser request){
+        User user = new User();
 
-        if(usersRepository.existsByUsername(request.getUsername())){
+        if(userRepository.existsByUsername(request.getUsername())){
             throw new AppException(ErrorCode.USER_ALREADY_EXISTS);
         }
 
         Role role = roleRepository.findById(2L).orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
         user.setUsername(request.getUsername());
-        user.setPassword(request.getPassword());
+        // Hash the password before saving
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setEmail(request.getEmail());
         user.setPhoneNumber(request.getPhoneNumber());
         user.setFullName(request.getFullName());
         user.setRoleId(role);
 
-        return usersRepository.save(user);
+        return userRepository.save(user);
     }
 
-    public List<Users> getAllUsers(){
-        return usersRepository.findAll();
+    public List<User> getAllUsers(){
+        return userRepository.findAll();
     }
 
-    public Users getUserById(Long userId){
-        return usersRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+    public User getUserById(Long userId){
+        return userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
     }
 
-    public Users updateUser(Long userId, UpdateUser request){
-        Users user = usersRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+    public User updateUser(Long userId, UpdateUser request){
+        User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
         user.setUsername(request.getUsername());
         user.setPassword(request.getPassword());
@@ -57,16 +61,16 @@ public class UsersService {
         user.setPhoneNumber(request.getPhoneNumber());
         user.setIsActive(request.getIsActive());
         
-        return usersRepository.save(user);
+        return userRepository.save(user);
     }
     
     public void deleteUser(Long userId){
-        usersRepository.deleteById(userId);
+        userRepository.deleteById(userId);
     }
 
     public String deleteAllUsers(String passwordAdmin){
         if(passwordAdmin.equals("admin333")){
-            usersRepository.deleteAll();
+            userRepository.deleteAll();
             return "All users deleted successfully";
         }
         throw new RuntimeException("Invalid admin password");

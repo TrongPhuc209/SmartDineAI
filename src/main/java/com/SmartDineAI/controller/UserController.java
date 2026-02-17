@@ -15,54 +15,54 @@ import org.springframework.web.bind.annotation.RestController;
 import com.SmartDineAI.dto.request.CreateUser;
 import com.SmartDineAI.dto.request.UpdateUser;
 import com.SmartDineAI.dto.response.ApiResponse;
-import com.SmartDineAI.entity.Users;
-import com.SmartDineAI.service.UsersService;
+import com.SmartDineAI.entity.User;
+import com.SmartDineAI.service.UserService;
 
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/users")
-public class UsersController {
+public class UserController {
     @Autowired
-    private UsersService usersService;
+    private UserService userService;
 
     @PostMapping
-    public ApiResponse<Users> createUser(@RequestBody @Valid CreateUser request){
-        ApiResponse<Users> response = new ApiResponse<>();
-        response.setResult(usersService.createUser(request));
+    public ApiResponse<User> createUser(@RequestBody @Valid CreateUser request){
+        ApiResponse<User> response = new ApiResponse<>();
+        response.setResult(userService.createUser(request));
         return response;
     }
 
     @GetMapping
-    public ApiResponse<List<Users>> getAllUsers(){
-        ApiResponse<List<Users>> response = new ApiResponse<>();
-        response.setResult(usersService.getAllUsers());
+    public ApiResponse<List<User>> getAllUsers(){
+        ApiResponse<List<User>> response = new ApiResponse<>();
+        response.setResult(userService.getAllUsers());
         return response;
     }
 
     @GetMapping("/{userId}")
-    public ApiResponse<Users> getUserById(@PathVariable Long userId){
-        ApiResponse<Users> response = new ApiResponse<>();
-        response.setResult(usersService.getUserById(userId));
+    public ApiResponse<User> getUserById(@PathVariable Long userId){
+        ApiResponse<User> response = new ApiResponse<>();
+        response.setResult(userService.getUserById(userId));
         return response;
     }
 
     @PutMapping("/{userId}")
-    public ApiResponse<Users> updateUser(@PathVariable @Valid Long userId, @RequestBody UpdateUser request){
-        ApiResponse<Users> response = new ApiResponse<>();
-        response.setResult(usersService.updateUser(userId, request));
+    public ApiResponse<User> updateUser(@PathVariable @Valid Long userId, @RequestBody UpdateUser request){
+        ApiResponse<User> response = new ApiResponse<>();
+        response.setResult(userService.updateUser(userId, request));
 
         return response;
     }
 
     @DeleteMapping("/{userId}")
     public String deleteUser(@PathVariable Long userId){
-        usersService.deleteUser(userId);
+        userService.deleteUser(userId);
         return "User deleted successfully";
     }
 
     @DeleteMapping("/all/{passwordAdmin}")
     public String deleteAllUsers(@PathVariable String passwordAdmin){
-        return usersService.deleteAllUsers(passwordAdmin);
+        return userService.deleteAllUsers(passwordAdmin);
     }
 }
