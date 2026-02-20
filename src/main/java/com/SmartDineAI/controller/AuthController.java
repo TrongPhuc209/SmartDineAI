@@ -6,7 +6,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.SmartDineAI.dto.request.LoginRequest;
+import com.SmartDineAI.dto.request.AuthenticationRequest;
+import com.SmartDineAI.dto.request.IntrospectRequest;
+import com.SmartDineAI.dto.response.ApiResponse;
+import com.SmartDineAI.dto.response.AuthenticationResponse;
+import com.SmartDineAI.dto.response.IntrospectResponse;
 import com.SmartDineAI.service.AuthService;
 
 @RestController
@@ -15,8 +19,19 @@ public class AuthController {
     @Autowired
     private AuthService authService;
 
-    @PostMapping("/login")
-    public String login(@RequestBody LoginRequest request){
-        return authService.login(request);
+    @PostMapping("/token")
+    public ApiResponse<AuthenticationResponse> login(@RequestBody AuthenticationRequest request){
+        ApiResponse<AuthenticationResponse> response = new ApiResponse<>();
+        var authResponse = authService.login(request);
+        response.setResult(authResponse);
+        return response;
+    }
+
+    @PostMapping("/introspect")
+    public ApiResponse<IntrospectResponse> introspect(@RequestBody IntrospectRequest request){
+        ApiResponse<IntrospectResponse> response = new ApiResponse<>();
+        var introspectResponse = authService.introspect(request);
+        response.setResult(introspectResponse);
+        return response;
     }
 }

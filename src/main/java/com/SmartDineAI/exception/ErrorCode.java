@@ -18,6 +18,7 @@ public enum ErrorCode {
     INVALID_CREDENTIALS(401, "Invalid username or password"),
     TOKEN_EXPIRED(401, "Token has expired"),
     INVALID_TOKEN(401, "Invalid token"),
+    TOKEN_GENERATION_FAILED(401, "Failed to generate authentication token"),
 
     ACCESS_DENIED(403, "You do not have permission"),
     FORBIDDEN_ACTION(403, "Action is not allowed"),

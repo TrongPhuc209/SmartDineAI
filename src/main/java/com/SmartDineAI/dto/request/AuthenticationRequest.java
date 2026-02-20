@@ -1,6 +1,6 @@
 package com.SmartDineAI.dto.request;
 
-public class LoginRequest {
+public class AuthenticationRequest {
     private String username;
     private String password;
 
