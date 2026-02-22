@@ -21,17 +21,25 @@ public class AuthController {
 
     @PostMapping("/token")
     public ApiResponse<AuthenticationResponse> login(@RequestBody AuthenticationRequest request){
-        ApiResponse<AuthenticationResponse> response = new ApiResponse<>();
         var authResponse = authService.login(request);
+        ApiResponse<AuthenticationResponse> response = new ApiResponse<>();
         response.setResult(authResponse);
         return response;
     }
 
     @PostMapping("/introspect")
     public ApiResponse<IntrospectResponse> introspect(@RequestBody IntrospectRequest request){
+        IntrospectResponse introspect = authService.introspect(request);
         ApiResponse<IntrospectResponse> response = new ApiResponse<>();
-        var introspectResponse = authService.introspect(request);
-        response.setResult(introspectResponse);
+        response.setResult(introspect);
         return response;
     }
+
+    // @PostMapping("/introspect")
+    // public ApiResponse<IntrospectResponse> introspect(@RequestBody IntrospectRequest request){
+    //     ApiResponse<IntrospectResponse> response = new ApiResponse<>();
+    //     var introspectResponse = authService.introspect(request);
+    //     response.setResult(introspectResponse);
+    //     return response;
+    // }
 }

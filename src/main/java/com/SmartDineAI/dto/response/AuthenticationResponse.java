@@ -1,27 +1,13 @@
 package com.SmartDineAI.dto.response;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+@AllArgsConstructor
 public class AuthenticationResponse {
     private String token;
     private Boolean authenticated;
-
-    public AuthenticationResponse(String token, Boolean authenticated) {
-        this.token = token;
-        this.authenticated = authenticated;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    public Boolean getAuthenticated() {
-        return authenticated;
-    }
-
-    public void setAuthenticated(Boolean authenticated) {
-        this.authenticated = authenticated;
-    }
 }

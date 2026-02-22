@@ -39,39 +39,42 @@ public class AuthService {
     @NonFinal
     protected static final String SIGNER_KEY = "SmartDineAI_SuperSecretKey_ForJWTSigning_2026_ThisKeyMustBeLongEnough_123456";
 
-    public AuthenticationResponse login(AuthenticationRequest request) {
+    public AuthenticationResponse login(AuthenticationRequest request){
         User user = userRepository.findByUsername(request.getUsername())
-                        .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+        .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
-        Boolean isAuthenticated = passwordEncoder.matches(request.getPassword(), user.getPassword());
+        var isAuthenticated = passwordEncoder.matches(request.getPassword(), user.getPassword());
 
         if(!isAuthenticated){
             throw new AppException(ErrorCode.UNAUTHENTICATED);
         }
 
-        var token = generateToken(request.getUsername());
+        String token = generateToken(request.getUsername());
 
-        return new AuthenticationResponse(token, isAuthenticated);
+        AuthenticationResponse response = new AuthenticationResponse(token, isAuthenticated);
+        return response;
     }
 
     private String generateToken(String username){
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
 
-        JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
-                                .subject(username)
-                                .issuer("SmartDineAI")
-                                .issueTime(new Date())
-                                .expirationTime(new Date(Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli()))
-                                .build();
+        JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
+                                                    .subject(username)
+                                                    .issuer("SmartDineAI")
+                                                    .issueTime(new Date())
+                                                    .expirationTime(new Date(
+                                                        Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli()
+                                                    ))
+                                                    .build();
 
-        Payload payload = new Payload(claimsSet.toJSONObject());
-        
+        Payload payload = new Payload(jwtClaimsSet.toJSONObject());
+
         JWSObject jwsObject = new JWSObject(header, payload);
 
         try{
-            jwsObject.sign(new MACSigner(SIGNER_KEY.getBytes()));
+            jwsObject.sign(new MACSigner(SIGNER_KEY));
             return jwsObject.serialize();
-        } catch (JOSEException e) {
+        } catch (JOSEException ex){
             throw new AppException(ErrorCode.TOKEN_GENERATION_FAILED);
         }
     }
@@ -80,20 +83,21 @@ public class AuthService {
         String token = request.getToken();
 
         try{
-            JWSVerifier verifier = new MACVerifier(SIGNER_KEY.getBytes());
-            
+            JWSVerifier verifier = new MACVerifier(SIGNER_KEY);
+
             SignedJWT signedJWT = SignedJWT.parse(token);
-    
+
             Date expirationTime = signedJWT.getJWTClaimsSet().getExpirationTime();
-    
+
             var isValid = signedJWT.verify(verifier);
 
             IntrospectResponse response = new IntrospectResponse();
             response.setValid(isValid && expirationTime.after(new Date()));
             return response;
-            
-        } catch (JOSEException | ParseException e) {
+        } catch (JOSEException | ParseException ex){
             throw new AppException(ErrorCode.INVALID_TOKEN);
         }
     }
+
+
 }

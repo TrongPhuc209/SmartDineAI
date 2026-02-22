@@ -11,9 +11,9 @@ import com.SmartDineAI.dto.response.ApiResponse;
 public class GlobalExceptionHandler {
     
     @ExceptionHandler(AppException.class)
-    public ResponseEntity<ApiResponse<Object>> handleAppExceptions(AppException exception) {
+    public ResponseEntity<ApiResponse<Void>> handleAppExceptions(AppException exception) {
         ErrorCode errorCode = exception.getErrorCode();
-        ApiResponse<Object> response = new ApiResponse<>();
+        ApiResponse<Void> response = new ApiResponse<>();
 
         response.setCode(errorCode.getStatus());
         response.setMessage(errorCode.getMessage());
@@ -22,17 +22,17 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<ApiResponse<Object>> handleRuntimeExceptions(RuntimeException exception) {
-        ApiResponse<Object> response = new ApiResponse<>();
+    public ResponseEntity<ApiResponse<Void>> handleRuntimeExceptions(RuntimeException exception) {
+        ApiResponse<Void> response = new ApiResponse<>();
         response.setCode(400);
         response.setMessage(exception.getMessage());
         return ResponseEntity.badRequest().body(response);
     }
     
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiResponse<Object>> handleValidationExceptions(MethodArgumentNotValidException exception) {
+    public ResponseEntity<ApiResponse<Void>> handleValidationExceptions(MethodArgumentNotValidException exception) {
         String keyStatus = exception.getFieldError().getDefaultMessage();
-        ApiResponse<Object> response = new ApiResponse<>();
+        ApiResponse<Void> response = new ApiResponse<>();
         ErrorCode errorCode = ErrorCode.INVALID_KEY;
         
         try {
