@@ -50,20 +50,20 @@ public class AuthService {
         if(!isAuthenticated){
             throw new AppException(ErrorCode.UNAUTHENTICATED);
         }
-
-        String token = generateToken(request.getUsername());
+        String token = generateToken(user);
 
         AuthenticationResponse response = new AuthenticationResponse(token, isAuthenticated);
         return response;
     }
 
-    private String generateToken(String username){
+    private String generateToken(User user){
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
 
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
-                                                    .subject(username)
+                                                    .subject(user.getUsername())
                                                     .issuer("SmartDineAI")
                                                     .issueTime(new Date())
+                                                    .claim("scope", user.getRoleId().getName())
                                                     .expirationTime(new Date(
                                                         Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli()
                                                     ))

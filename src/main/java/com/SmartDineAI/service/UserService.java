@@ -3,12 +3,14 @@ package com.SmartDineAI.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.SmartDineAI.dto.request.CreateUser;
 import com.SmartDineAI.dto.request.UpdateUser;
+import com.SmartDineAI.dto.response.UserResponse;
 import com.SmartDineAI.entity.Role;
 import com.SmartDineAI.entity.User;
 import com.SmartDineAI.exception.AppException;
@@ -16,12 +18,27 @@ import com.SmartDineAI.exception.ErrorCode;
 import com.SmartDineAI.repository.RoleRepository;
 import com.SmartDineAI.repository.UserRepository;
 
+import lombok.extern.slf4j.*;;
+
+@Slf4j
 @Service
 public class UserService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
     private RoleRepository roleRepository;
+    private UserResponse mapToUserResponse(User user){
+        UserResponse responseDto = new UserResponse();
+        responseDto.setId(user.getId());
+        responseDto.setUsername(user.getUsername());
+        responseDto.setFullName(user.getFullName());
+        responseDto.setEmail(user.getEmail());
+        responseDto.setPhoneNumber(user.getPhoneNumber());
+        responseDto.setCreatedAt(user.getCreatedAt());
+        responseDto.setIsActive(user.getIsActive());
+        responseDto.setRole(user.getRoleId());
+        return responseDto;
+    }
 
     public User createUser(CreateUser request){
         User user = new User();
@@ -42,13 +59,22 @@ public class UserService {
 
         return userRepository.save(user);
     }
-
-    public List<User> getAllUsers(){
-        return userRepository.findAll();
+    
+    public UserResponse getUserById(Long userId){
+        User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+        UserResponse response = mapToUserResponse(user);
+        return response;
     }
 
-    public User getUserById(Long userId){
-        return userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+    public List<UserResponse> getAllUsers(){
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        log.info("username: {}", authentication.getName());
+        authentication.getAuthorities().forEach(info -> log.info(info.getAuthority()));
+
+        return userRepository.findAll()
+                                .stream()
+                                .map(this::mapToUserResponse)
+                                .toList();
     }
 
     public User updateUser(Long userId, UpdateUser request){

@@ -3,6 +3,8 @@ package com.SmartDineAI.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.SmartDineAI.dto.request.CreateUser;
 import com.SmartDineAI.dto.request.UpdateUser;
 import com.SmartDineAI.dto.response.ApiResponse;
+import com.SmartDineAI.dto.response.UserResponse;
 import com.SmartDineAI.entity.User;
 import com.SmartDineAI.service.UserService;
 
@@ -33,16 +36,18 @@ public class UserController {
         return response;
     }
 
+    @PreAuthorize("hasRole('Admin')")
     @GetMapping
-    public ApiResponse<List<User>> getAllUsers(){
-        ApiResponse<List<User>> response = new ApiResponse<>();
+    public ApiResponse<List<UserResponse>> getAllUsers(){
+        ApiResponse<List<UserResponse>> response = new ApiResponse<>();
         response.setResult(userService.getAllUsers());
         return response;
     }
 
+    @PostAuthorize("hasRole('Admin') or returnObject.result.username == authentication.name")
     @GetMapping("/{userId}")
-    public ApiResponse<User> getUserById(@PathVariable Long userId){
-        ApiResponse<User> response = new ApiResponse<>();
+    public ApiResponse<UserResponse> getUserById(@PathVariable Long userId){
+        ApiResponse<UserResponse> response = new ApiResponse<>();
         response.setResult(userService.getUserById(userId));
         return response;
     }
