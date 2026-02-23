@@ -6,3 +6,6 @@ spring:
         url: jdbc:mysql://localhost:3306/smart_dine_ai
         username: root
         password: 333333
+
+jwt:
+    signerKey: "SmartDineAI_SuperSecretKey_ForJWTSigning_2026_ThisKeyMustBeLongEnough_333333"

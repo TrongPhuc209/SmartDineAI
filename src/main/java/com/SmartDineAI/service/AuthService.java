@@ -6,6 +6,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -37,7 +38,8 @@ public class AuthService {
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     @NonFinal
-    protected static final String SIGNER_KEY = "SmartDineAI_SuperSecretKey_ForJWTSigning_2026_ThisKeyMustBeLongEnough_123456";
+    @Value("${jwt.signerKey}")
+    private String SIGNER_KEY;
 
     public AuthenticationResponse login(AuthenticationRequest request){
         User user = userRepository.findByUsername(request.getUsername())

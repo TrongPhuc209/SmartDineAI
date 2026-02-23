@@ -35,11 +35,4 @@ public class AuthController {
         return response;
     }
 
-    // @PostMapping("/introspect")
-    // public ApiResponse<IntrospectResponse> introspect(@RequestBody IntrospectRequest request){
-    //     ApiResponse<IntrospectResponse> response = new ApiResponse<>();
-    //     var introspectResponse = authService.introspect(request);
-    //     response.setResult(introspectResponse);
-    //     return response;
-    // }
 }
