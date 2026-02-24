@@ -52,6 +52,14 @@ public class UserController {
         return response;
     }
 
+    @GetMapping("/my-info")
+    public ApiResponse<UserResponse> getMyInfo(){
+        UserResponse userResponse = userService.getMyInfo();
+        ApiResponse<UserResponse> response = new ApiResponse<>();
+        response.setResult(userResponse);
+        return response;
+    }
+
     @PutMapping("/{userId}")
     public ApiResponse<User> updateUser(@PathVariable @Valid Long userId, @RequestBody UpdateUser request){
         ApiResponse<User> response = new ApiResponse<>();

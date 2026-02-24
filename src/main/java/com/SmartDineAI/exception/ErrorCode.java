@@ -36,14 +36,14 @@ public enum ErrorCode {
     UNKNOWN_ERROR(500, "An unknown error occurred")
 
     ;
-    private final int status;
+    private final int code;
     private final String message;
-    ErrorCode(int status, String message) {
-        this.status = status;
+    ErrorCode(int code, String message) {
+        this.code = code;
         this.message = message;
     }
     public int getStatus() {
-        return status;
+        return code;
     }
     public String getMessage() {
         return message;

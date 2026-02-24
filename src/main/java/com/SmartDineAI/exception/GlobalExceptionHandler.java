@@ -1,6 +1,7 @@
 package com.SmartDineAI.exception;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -21,6 +22,15 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(errorCode.getStatus()).body(response);
     }
 
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ApiResponse<Void>> AccessDeniedExceptions(AccessDeniedException exception){
+        ErrorCode errorCode = ErrorCode.ACCESS_DENIED;
+        ApiResponse<Void> response = new ApiResponse<>();
+        response.setCode(errorCode.getStatus());
+        response.setMessage(errorCode.getMessage());
+        return ResponseEntity.status(response.getCode()).body(response);
+    }
+
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ApiResponse<Void>> handleRuntimeExceptions(RuntimeException exception) {
         ApiResponse<Void> response = new ApiResponse<>();
@@ -38,8 +48,8 @@ public class GlobalExceptionHandler {
         try {
             errorCode = ErrorCode.valueOf(keyStatus);
         } catch (IllegalArgumentException e) {
-        }
 
+        }
 
         response.setCode(errorCode.getStatus());
         response.setMessage(errorCode.getMessage());

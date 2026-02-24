@@ -66,6 +66,13 @@ public class UserService {
         return response;
     }
 
+    public UserResponse getMyInfo(){
+        var context = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByUsername(context).orElseThrow(() ->new AppException(ErrorCode.USER_NOT_FOUND));
+        UserResponse userResponse = mapToUserResponse(user);
+        return userResponse;
+    }
+
     public List<UserResponse> getAllUsers(){
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         log.info("username: {}", authentication.getName());
