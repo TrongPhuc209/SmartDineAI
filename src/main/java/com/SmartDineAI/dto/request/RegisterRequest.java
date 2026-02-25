@@ -9,7 +9,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CreateUser {
+public class RegisterRequest {
     @Size(min = 3, max = 50, message = "INVALID_FORMAT_USERNAME")
     private String username;
 

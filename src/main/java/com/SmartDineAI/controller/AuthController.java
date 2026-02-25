@@ -8,10 +8,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.SmartDineAI.dto.request.AuthenticationRequest;
 import com.SmartDineAI.dto.request.IntrospectRequest;
+import com.SmartDineAI.dto.request.RegisterRequest;
 import com.SmartDineAI.dto.response.ApiResponse;
 import com.SmartDineAI.dto.response.AuthenticationResponse;
 import com.SmartDineAI.dto.response.IntrospectResponse;
 import com.SmartDineAI.service.AuthService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/auth")
@@ -19,10 +22,18 @@ public class AuthController {
     @Autowired
     private AuthService authService;
 
-    @PostMapping("/token")
+    @PostMapping("/login")
     public ApiResponse<AuthenticationResponse> login(@RequestBody AuthenticationRequest request){
         var authResponse = authService.login(request);
         ApiResponse<AuthenticationResponse> response = new ApiResponse<>();
+        response.setResult(authResponse);
+        return response;
+    }
+
+    @PostMapping("/register")
+    public ApiResponse<String> register(@RequestBody @Valid RegisterRequest request){
+        var authResponse = authService.register(request);
+        ApiResponse<String> response = new ApiResponse<>();
         response.setResult(authResponse);
         return response;
     }

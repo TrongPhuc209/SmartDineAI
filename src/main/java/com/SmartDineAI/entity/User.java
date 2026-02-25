@@ -1,6 +1,6 @@
 package com.SmartDineAI.entity;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -44,7 +44,7 @@ public class User {
     private String phoneNumber;
 
     @Column(name = "CREATED_AT_US")
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
 
     @Column(name = "IS_ACTIVE_US")
     private Boolean isActive;
@@ -55,7 +55,7 @@ public class User {
 
     @PrePersist
     protected void onCreate() {
-        createdAt = LocalDate.now();
+        createdAt = LocalDateTime.now();
         isActive = true;
     }
 

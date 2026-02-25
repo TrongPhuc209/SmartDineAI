@@ -1,6 +1,6 @@
 package com.SmartDineAI.dto.response;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.SmartDineAI.entity.Role;
 
@@ -19,7 +19,7 @@ public class UserResponse {
     private String fullName;
     private String email;
     private String phoneNumber;
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
     private Boolean isActive;
     private Role role;
 }

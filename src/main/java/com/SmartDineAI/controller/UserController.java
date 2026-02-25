@@ -36,7 +36,7 @@ public class UserController {
         return response;
     }
 
-    @PreAuthorize("hasRole('Admin')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ApiResponse<List<UserResponse>> getAllUsers(){
         ApiResponse<List<UserResponse>> response = new ApiResponse<>();
@@ -44,7 +44,7 @@ public class UserController {
         return response;
     }
 
-    @PostAuthorize("hasRole('Admin') or returnObject.result.username == authentication.name")
+    @PostAuthorize("hasRole('ADMIN') or returnObject.result.username == authentication.name")
     @GetMapping("/{userId}")
     public ApiResponse<UserResponse> getUserById(@PathVariable Long userId){
         ApiResponse<UserResponse> response = new ApiResponse<>();
@@ -60,6 +60,7 @@ public class UserController {
         return response;
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{userId}")
     public ApiResponse<User> updateUser(@PathVariable @Valid Long userId, @RequestBody UpdateUser request){
         ApiResponse<User> response = new ApiResponse<>();
@@ -68,12 +69,14 @@ public class UserController {
         return response;
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{userId}")
     public String deleteUser(@PathVariable Long userId){
         userService.deleteUser(userId);
         return "User deleted successfully";
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/all/{passwordAdmin}")
     public String deleteAllUsers(@PathVariable String passwordAdmin){
         return userService.deleteAllUsers(passwordAdmin);
