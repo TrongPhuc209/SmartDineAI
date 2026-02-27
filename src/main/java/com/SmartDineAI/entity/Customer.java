@@ -26,7 +26,7 @@ public class Customer {
     private String fullName;
 
     @Column(name = "PHONE_CUS")
-    private String phoneNuber;
+    private String phoneNumber;
 
     @Column(name = "EMAIL_CUS")
     private String email;
