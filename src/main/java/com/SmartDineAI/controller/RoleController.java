@@ -13,7 +13,7 @@ import com.SmartDineAI.entity.Role;
 import com.SmartDineAI.service.RoleService;
 
 @RestController
-@RequestMapping("/roles")
+@RequestMapping("/admin/roles")
 public class RoleController {
     @Autowired
     private RoleService roleService;

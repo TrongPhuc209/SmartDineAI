@@ -26,7 +26,9 @@ public class SecurityConfig {
     private final static String PUBLIC_ENDPOINTS[] = {
                                             "/auth/login",
                                             "/auth/register",
-                                            "/auth/introspect"
+                                            "/auth/introspect",
+
+                                            "/admin/**"
 
                                         };
 
@@ -35,6 +37,9 @@ public class SecurityConfig {
 
         httpSecurity.authorizeHttpRequests(request -> request
             .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
+            .requestMatchers(HttpMethod.GET, PUBLIC_ENDPOINTS).permitAll()
+            .requestMatchers(HttpMethod.PUT, PUBLIC_ENDPOINTS).permitAll()
+            .requestMatchers(HttpMethod.DELETE, PUBLIC_ENDPOINTS).permitAll()
             .anyRequest().authenticated());
 
         httpSecurity.oauth2ResourceServer(oauth2 -> oauth2
@@ -66,5 +71,6 @@ public class SecurityConfig {
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(converter);
         return jwtAuthenticationConverter;
     }
+
 }
 
