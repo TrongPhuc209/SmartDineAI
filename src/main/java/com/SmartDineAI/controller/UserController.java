@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.SmartDineAI.dto.request.CreateUser;
-import com.SmartDineAI.dto.request.UpdateUser;
-import com.SmartDineAI.dto.response.ApiResponse;
-import com.SmartDineAI.dto.response.UserResponse;
+import com.SmartDineAI.dto.auth.ApiResponse;
+import com.SmartDineAI.dto.user.CreateUserRequest;
+import com.SmartDineAI.dto.user.UpdateUserRequest;
+import com.SmartDineAI.dto.user.UserResponse;
 import com.SmartDineAI.entity.User;
 import com.SmartDineAI.service.UserService;
 
@@ -30,7 +30,7 @@ public class UserController {
     private UserService userService;
 
     @PostMapping
-    public ApiResponse<User> createUser(@RequestBody @Valid CreateUser request){
+    public ApiResponse<User> createUser(@RequestBody @Valid CreateUserRequest request){
         ApiResponse<User> response = new ApiResponse<>();
         response.setResult(userService.createUser(request));
         return response;
@@ -62,7 +62,7 @@ public class UserController {
 
     // @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{userId}")
-    public ApiResponse<User> updateUser(@PathVariable @Valid Long userId, @RequestBody UpdateUser request){
+    public ApiResponse<User> updateUser(@PathVariable @Valid Long userId, @RequestBody UpdateUserRequest request){
         ApiResponse<User> response = new ApiResponse<>();
         response.setResult(userService.updateUser(userId, request));
 

@@ -1,4 +1,4 @@
-package com.SmartDineAI.dto.response;
+package com.SmartDineAI.dto.user;
 
 import java.time.LocalDateTime;
 

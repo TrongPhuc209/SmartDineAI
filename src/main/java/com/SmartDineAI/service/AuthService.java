@@ -11,11 +11,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.SmartDineAI.dto.request.AuthenticationRequest;
-import com.SmartDineAI.dto.request.IntrospectRequest;
-import com.SmartDineAI.dto.request.RegisterRequest;
-import com.SmartDineAI.dto.response.AuthenticationResponse;
-import com.SmartDineAI.dto.response.IntrospectResponse;
+import com.SmartDineAI.dto.auth.AuthenticationRequest;
+import com.SmartDineAI.dto.auth.AuthenticationResponse;
+import com.SmartDineAI.dto.auth.IntrospectRequest;
+import com.SmartDineAI.dto.auth.IntrospectResponse;
+import com.SmartDineAI.dto.auth.RegisterRequest;
 import com.SmartDineAI.entity.Role;
 import com.SmartDineAI.entity.User;
 import com.SmartDineAI.exception.AppException;

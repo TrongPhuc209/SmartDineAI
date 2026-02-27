@@ -41,5 +41,6 @@ public class DiningTable {
     @PrePersist
     protected void onCreate(){
         isActive = true;
+        capacity = 0;
     }
 }

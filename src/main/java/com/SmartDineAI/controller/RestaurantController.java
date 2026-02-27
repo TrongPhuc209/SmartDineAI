@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.SmartDineAI.dto.request.CreateRestaurantRequest;
-import com.SmartDineAI.dto.response.ApiResponse;
-import com.SmartDineAI.dto.response.RestaurantResponse;
+import com.SmartDineAI.dto.auth.ApiResponse;
+import com.SmartDineAI.dto.restaurant.CreateRestaurantRequest;
+import com.SmartDineAI.dto.restaurant.RestaurantResponse;
 import com.SmartDineAI.entity.Restaurant;
 import com.SmartDineAI.service.RestaurantSevice;
 

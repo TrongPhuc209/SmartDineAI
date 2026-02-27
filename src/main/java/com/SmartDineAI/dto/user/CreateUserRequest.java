@@ -1,4 +1,4 @@
-package com.SmartDineAI.dto.request;
+package com.SmartDineAI.dto.user;
 
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Email;
@@ -9,7 +9,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CreateUser {
+public class CreateUserRequest {
     @Size(min = 3, max = 50, message = "INVALID_FORMAT_USERNAME")
     private String username;
 

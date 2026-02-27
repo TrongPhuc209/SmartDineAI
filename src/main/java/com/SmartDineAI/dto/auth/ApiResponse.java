@@ -1,4 +1,4 @@
-package com.SmartDineAI.dto.response;
+package com.SmartDineAI.dto.auth;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 

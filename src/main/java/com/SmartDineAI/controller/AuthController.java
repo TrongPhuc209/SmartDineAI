@@ -6,12 +6,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.SmartDineAI.dto.request.AuthenticationRequest;
-import com.SmartDineAI.dto.request.IntrospectRequest;
-import com.SmartDineAI.dto.request.RegisterRequest;
-import com.SmartDineAI.dto.response.ApiResponse;
-import com.SmartDineAI.dto.response.AuthenticationResponse;
-import com.SmartDineAI.dto.response.IntrospectResponse;
+import com.SmartDineAI.dto.auth.ApiResponse;
+import com.SmartDineAI.dto.auth.AuthenticationRequest;
+import com.SmartDineAI.dto.auth.AuthenticationResponse;
+import com.SmartDineAI.dto.auth.IntrospectRequest;
+import com.SmartDineAI.dto.auth.IntrospectResponse;
+import com.SmartDineAI.dto.auth.RegisterRequest;
 import com.SmartDineAI.service.AuthService;
 
 import jakarta.validation.Valid;

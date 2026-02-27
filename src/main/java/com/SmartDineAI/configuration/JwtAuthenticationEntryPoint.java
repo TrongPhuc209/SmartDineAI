@@ -5,7 +5,7 @@ import java.io.IOException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 
-import com.SmartDineAI.dto.response.ApiResponse;
+import com.SmartDineAI.dto.auth.ApiResponse;
 import com.SmartDineAI.exception.ErrorCode;
 
 import jakarta.servlet.ServletException;

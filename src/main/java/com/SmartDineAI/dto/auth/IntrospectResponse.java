@@ -1,4 +1,4 @@
-package com.SmartDineAI.dto.response;
+package com.SmartDineAI.dto.auth;
 
 import lombok.Getter;
 import lombok.Setter;

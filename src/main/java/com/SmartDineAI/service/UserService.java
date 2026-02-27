@@ -8,9 +8,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.SmartDineAI.dto.request.CreateUser;
-import com.SmartDineAI.dto.request.UpdateUser;
-import com.SmartDineAI.dto.response.UserResponse;
+import com.SmartDineAI.dto.user.CreateUserRequest;
+import com.SmartDineAI.dto.user.UpdateUserRequest;
+import com.SmartDineAI.dto.user.UserResponse;
 import com.SmartDineAI.entity.Role;
 import com.SmartDineAI.entity.User;
 import com.SmartDineAI.exception.AppException;
@@ -41,7 +41,7 @@ public class UserService {
         return responseDto;
     }
 
-    public User createUser(CreateUser request){
+    public User createUser(CreateUserRequest request){
         User user = new User();
 
         if(userRepository.existsByUsername(request.getUsername())){
@@ -84,7 +84,7 @@ public class UserService {
                                 .toList();
     }
 
-    public User updateUser(Long userId, UpdateUser request){
+    public User updateUser(Long userId, UpdateUserRequest request){
         User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
         user.setUsername(request.getUsername());

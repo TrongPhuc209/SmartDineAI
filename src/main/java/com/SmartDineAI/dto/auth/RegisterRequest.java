@@ -1,4 +1,4 @@
-package com.SmartDineAI.dto.request;
+package com.SmartDineAI.dto.auth;
 
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Email;

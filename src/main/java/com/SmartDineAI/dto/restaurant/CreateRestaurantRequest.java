@@ -1,4 +1,4 @@
-package com.SmartDineAI.dto.request;
+package com.SmartDineAI.dto.restaurant;
 
 import java.time.LocalTime;
 

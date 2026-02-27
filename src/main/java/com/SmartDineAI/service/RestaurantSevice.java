@@ -5,8 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.SmartDineAI.dto.request.CreateRestaurantRequest;
-import com.SmartDineAI.dto.response.RestaurantResponse;
+import com.SmartDineAI.dto.restaurant.CreateRestaurantRequest;
+import com.SmartDineAI.dto.restaurant.RestaurantResponse;
 import com.SmartDineAI.entity.Restaurant;
 import com.SmartDineAI.exception.AppException;
 import com.SmartDineAI.exception.ErrorCode;

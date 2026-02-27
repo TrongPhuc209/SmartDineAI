@@ -6,7 +6,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import com.SmartDineAI.dto.response.ApiResponse;
+import com.SmartDineAI.dto.auth.ApiResponse;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
