@@ -86,4 +86,5 @@ public class UserController {
         response.setMessage("deleted successfully");
         return response;
     }
+
 }

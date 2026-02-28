@@ -43,16 +43,7 @@ public class RestaurantController {
         response.setResult(restaurantSevice.getAllRestaurant());
         return response;
     }
-
-    // @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping
-    public ApiResponse<List<RestaurantResponse>> getRestaurantBy(@RequestParam(required = false) String name, 
-                                                                    @RequestParam(required = false) Boolean isActive){
-        ApiResponse<List<RestaurantResponse>> response = new ApiResponse<>();
-        response.setResult(restaurantSevice.getRestaurantBy(name, isActive));
-        return response;
-    }
-
+    
     // @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ApiResponse<Restaurant> createRestaurant(@RequestBody @Valid CreateRestaurantRequest request){
@@ -60,7 +51,7 @@ public class RestaurantController {
         apiResponse.setResult(restaurantSevice.createRestaurant(request));
         return apiResponse;
     }
-
+    
     // @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("{id}")
     public ApiResponse<RestaurantResponse> updateRestaurant(@RequestBody @Valid CreateRestaurantRequest request, @PathVariable Long id){
@@ -68,10 +59,20 @@ public class RestaurantController {
         response.setResult(restaurantSevice.updateRestaurant(request, id));
         return response;
     }
-
+    
     // @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public void deleteRestaurant(@PathVariable Long id){
         restaurantSevice.deleteRestaurant(id);
+    }
+
+    
+    // @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping
+    public ApiResponse<List<RestaurantResponse>> searchRestaurant(@RequestParam(required = false) String name, 
+                                                                    @RequestParam(required = false) Boolean isActive){
+        ApiResponse<List<RestaurantResponse>> response = new ApiResponse<>();
+        response.setResult(restaurantSevice.searchRestaurant(name, isActive));
+        return response;
     }
 }
