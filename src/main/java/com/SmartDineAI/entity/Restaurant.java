@@ -42,14 +42,14 @@ public class Restaurant {
     private LocalTime closeTime;
 
     @Column(name = "IS_ACTIVE_RTR")
-    private Boolean isActive;
+    private boolean active;
 
     @Column(name = "CREATED_AT_RTR")
     private LocalDateTime createAt;
 
     @PrePersist
     protected void onCreate(){
-        isActive = true;
+        active = true;
         createAt = LocalDateTime.now();
     }
 }

@@ -33,24 +33,21 @@ public class SecurityConfig {
                                         };
 
     @Bean
-    SecurityFilterChain filterChain(HttpSecurity httpSecurity){
+    SecurityFilterChain filterChain(HttpSecurity http){
 
-        httpSecurity.authorizeHttpRequests(request -> request
-            .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
-            .requestMatchers(HttpMethod.GET, PUBLIC_ENDPOINTS).permitAll()
-            .requestMatchers(HttpMethod.PUT, PUBLIC_ENDPOINTS).permitAll()
-            .requestMatchers(HttpMethod.DELETE, PUBLIC_ENDPOINTS).permitAll()
+        http
+            .csrf(csrf -> csrf.disable())
+            .authorizeHttpRequests(request -> request
+            .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
             .anyRequest().authenticated());
 
-        httpSecurity.oauth2ResourceServer(oauth2 -> oauth2
+        http.oauth2ResourceServer(oauth2 -> oauth2
             .jwt(jwt -> jwt.decoder(jwtDecoder())
                             .jwtAuthenticationConverter(jwtAuthenticationConverter()))
             .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
         );
 
-        httpSecurity.csrf(csrf -> csrf.disable());
-
-        return httpSecurity.build();
+        return http.build();
     }
 
     @Bean

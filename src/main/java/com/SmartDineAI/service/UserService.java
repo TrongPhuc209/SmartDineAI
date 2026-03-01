@@ -1,5 +1,6 @@
 package com.SmartDineAI.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,90 +16,68 @@ import com.SmartDineAI.entity.Role;
 import com.SmartDineAI.entity.User;
 import com.SmartDineAI.exception.AppException;
 import com.SmartDineAI.exception.ErrorCode;
+import com.SmartDineAI.mapper.UserMapper;
 import com.SmartDineAI.repository.RoleRepository;
 import com.SmartDineAI.repository.UserRepository;
 
-import lombok.extern.slf4j.*;;
-
-@Slf4j
 @Service
 public class UserService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
     private RoleRepository roleRepository;
+    @Autowired
+    private UserMapper userMapper;
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-    private UserResponse mapToUserResponse(User user){
-        UserResponse responseDto = new UserResponse();
-        responseDto.setId(user.getId());
-        responseDto.setUsername(user.getUsername());
-        responseDto.setFullName(user.getFullName());
-        responseDto.setEmail(user.getEmail());
-        responseDto.setPhoneNumber(user.getPhoneNumber());
-        responseDto.setCreatedAt(user.getCreatedAt());
-        responseDto.setIsActive(user.getIsActive());
-        responseDto.setRole(user.getRoleId());
-        return responseDto;
-    }
 
     public User createUser(CreateUserRequest request){
-        User user = new User();
-
         if(userRepository.existsByUsername(request.getUsername())){
             throw new AppException(ErrorCode.USER_ALREADY_EXISTS);
         }
 
         Role role = roleRepository.findById(2L).orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
-        user.setUsername(request.getUsername());
-        // Hash the password before saving
+        User user = userMapper.toUser(request);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setEmail(request.getEmail());
-        user.setPhoneNumber(request.getPhoneNumber());
-        user.setFullName(request.getFullName());
-        user.setRoleId(role);
+        user.setRole(role);
 
         return userRepository.save(user);
     }
     
     public UserResponse getUserById(Long userId){
         User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
-        UserResponse response = mapToUserResponse(user);
-        return response;
+        return userMapper.toResponse(user);
     }
 
     public UserResponse getMyInfo(){
         var context = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByUsername(context).orElseThrow(() ->new AppException(ErrorCode.USER_NOT_FOUND));
-        UserResponse userResponse = mapToUserResponse(user);
-        return userResponse;
+        return userMapper.toResponse(user);
     }
 
     public List<UserResponse> getAllUsers(){
-        var authentication = SecurityContextHolder.getContext().getAuthentication();
-        log.info("username: {}", authentication.getName());
-        authentication.getAuthorities().forEach(info -> log.info(info.getAuthority()));
-
         return userRepository.findAll()
                                 .stream()
-                                .map(this::mapToUserResponse)
+                                .map(userMapper::toResponse)
                                 .toList();
     }
 
-    public User updateUser(Long userId, UpdateUserRequest request){
+    public UserResponse updateUser(Long userId, UpdateUserRequest request){
+        if(userRepository.existsByUsername(request.getUsername())){
+            throw new AppException(ErrorCode.USER_ALREADY_EXISTS);
+        }
         User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
-        user.setUsername(request.getUsername());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setFullName(request.getFullName());
-        user.setEmail(request.getEmail());
-        user.setPhoneNumber(request.getPhoneNumber());
-        user.setIsActive(request.getIsActive());
-        
-        return userRepository.save(user);
+        userMapper.updateUser(user, request);
+        if(request.getPassword() != null && !request.getPassword().isBlank()){
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
+        }
+
+        return userMapper.toResponse(user);
     }
     
     public void deleteUser(Long userId){
-        userRepository.deleteById(userId);
+        User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+        userRepository.delete(user);
     }
 
     public String deleteAllUsers(String passwordAdmin){
@@ -107,5 +86,18 @@ public class UserService {
             return "All users deleted successfully";
         }
         throw new RuntimeException("Invalid admin password");
+    }
+
+    public List<UserResponse> searchUser(String keyword, Long roleId, Boolean isActive, LocalDateTime fromDate, LocalDateTime toDate){
+        Role role = null;
+        if(roleId != null){
+            role = roleRepository.findById(roleId).orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
+        }
+
+        List<User> users = userRepository.searchUser(keyword, role, isActive, fromDate, toDate);
+
+        return users.stream()
+                    .map(userMapper::toResponse)
+                    .toList();
     }
 }

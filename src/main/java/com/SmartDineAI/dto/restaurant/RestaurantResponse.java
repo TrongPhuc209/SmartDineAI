@@ -3,6 +3,8 @@ package com.SmartDineAI.dto.restaurant;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,6 +12,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class RestaurantResponse {
 
     private String name;
@@ -18,6 +22,6 @@ public class RestaurantResponse {
     private String decription;
     private LocalTime openTime;
     private LocalTime closeTime;
-    private Boolean isActive;
+    private Boolean active;
     private LocalDateTime createAt;
 }

@@ -16,8 +16,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CreateRestaurantRequest {
-    @NotBlank
+public class UpdateRestaurantRequest {
     @Size(max = 50, message = "INVALID_FORMAT_RESTAURANT_NAME")
     private String name;
 
@@ -32,5 +31,7 @@ public class CreateRestaurantRequest {
     private LocalTime openTime;
 
     private LocalTime closeTime;
+
+    private Boolean active;
 
 }

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.SmartDineAI.dto.auth.ApiResponse;
 import com.SmartDineAI.dto.restaurant.CreateRestaurantRequest;
 import com.SmartDineAI.dto.restaurant.RestaurantResponse;
+import com.SmartDineAI.dto.restaurant.UpdateRestaurantRequest;
 import com.SmartDineAI.entity.Restaurant;
 import com.SmartDineAI.service.RestaurantSevice;
 
@@ -29,7 +30,7 @@ public class RestaurantController {
     RestaurantSevice restaurantSevice;
     
     // @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/id/{id}")
+    @GetMapping("/{id}")
     public ApiResponse<RestaurantResponse> getRestaurantById(@PathVariable Long id){
         ApiResponse<RestaurantResponse> response = new ApiResponse<>();
         response.setResult(restaurantSevice.getRestauranById(id));
@@ -53,8 +54,8 @@ public class RestaurantController {
     }
     
     // @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("{id}")
-    public ApiResponse<RestaurantResponse> updateRestaurant(@RequestBody @Valid CreateRestaurantRequest request, @PathVariable Long id){
+    @PutMapping("/{id}")
+    public ApiResponse<RestaurantResponse> updateRestaurant(@RequestBody @Valid UpdateRestaurantRequest request, @PathVariable Long id){
         ApiResponse<RestaurantResponse> response = new ApiResponse<>();
         response.setResult(restaurantSevice.updateRestaurant(request, id));
         return response;
@@ -70,9 +71,9 @@ public class RestaurantController {
     // @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ApiResponse<List<RestaurantResponse>> searchRestaurant(@RequestParam(required = false) String name, 
-                                                                    @RequestParam(required = false) Boolean isActive){
+                                                                    @RequestParam(required = false) Boolean active){
         ApiResponse<List<RestaurantResponse>> response = new ApiResponse<>();
-        response.setResult(restaurantSevice.searchRestaurant(name, isActive));
+        response.setResult(restaurantSevice.searchRestaurant(name, active));
         return response;
     }
 }

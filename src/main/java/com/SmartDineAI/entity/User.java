@@ -51,7 +51,7 @@ public class User {
 
     @ManyToOne
     @JoinColumn(name = "ID_R")
-    private Role roleId;
+    private Role role;
 
     @PrePersist
     protected void onCreate() {

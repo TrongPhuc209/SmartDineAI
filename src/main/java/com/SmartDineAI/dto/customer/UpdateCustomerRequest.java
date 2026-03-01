@@ -11,9 +11,10 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CustomerResponse {
+public class UpdateCustomerRequest {
     private String fullName;
     private String phoneNumber;
     private String email;
     private String note;
+    private Boolean active;
 }

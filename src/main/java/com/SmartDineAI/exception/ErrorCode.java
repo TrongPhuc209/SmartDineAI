@@ -39,7 +39,8 @@ public enum ErrorCode {
     RESOURCE_NOT_FOUND(404, "Resource not found"),
     RESTAURANT_NOT_FOUND(404, "Restaurant not found"),
     RESTAURANT_NAME_NOT_FOUND(404, "Restaurant name not found"),
-
+    DINING_TABLE_NOT_FOUND(404, "DiningTable not found"),
+    
 
     USER_ALREADY_EXISTS(409, "Username already exists"),
     EMAIL_ALREADY_EXISTS(409, "Email already exists"),

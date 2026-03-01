@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.SmartDineAI.dto.auth.ApiResponse;
 import com.SmartDineAI.dto.customer.CreateCustomerRequest;
 import com.SmartDineAI.dto.customer.CustomerResponse;
+import com.SmartDineAI.dto.customer.UpdateCustomerRequest;
 import com.SmartDineAI.service.CustomerService;
 
 import jakarta.validation.Valid;
@@ -26,7 +27,7 @@ public class CustomerController {
     @Autowired
     CustomerService customerService;
 
-    @PreAuthorize("hasRole('ADMIN')")
+    // @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ApiResponse<CustomerResponse> createCustomer(@RequestBody @Valid CreateCustomerRequest request){
         ApiResponse<CustomerResponse> response = new ApiResponse<>();
@@ -34,7 +35,7 @@ public class CustomerController {
         return response;
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    // @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
     public ApiResponse<CustomerResponse> getCustomerById(@PathVariable Long id){
         ApiResponse<CustomerResponse> response = new ApiResponse<>();
@@ -42,7 +43,7 @@ public class CustomerController {
         return response;
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    // @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ApiResponse<List<CustomerResponse>> getAllCustomer(){
         ApiResponse<List<CustomerResponse>> response = new ApiResponse<>();
@@ -50,15 +51,14 @@ public class CustomerController {
         return response;
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    // @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
-    public ApiResponse<CustomerResponse> updateCustomer(@PathVariable Long id, @RequestBody @Valid CreateCustomerRequest request){
-        ApiResponse<CustomerResponse> response = new ApiResponse<>();
-        response.setResult(customerService.updateCustomer(id, request));
-        return response;
+    public ApiResponse<CustomerResponse> updateCustomer(@PathVariable Long id, @RequestBody @Valid UpdateCustomerRequest request){
+        return ApiResponse.<CustomerResponse>builder().result(customerService.updateCustomer(id, request))
+                                                        .build();
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    // @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ApiResponse<String> deleteCustomer(@PathVariable Long id){
         ApiResponse<String> response = new ApiResponse<>();

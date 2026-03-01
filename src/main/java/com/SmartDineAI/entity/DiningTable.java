@@ -26,21 +26,21 @@ public class DiningTable {
     private String tableCode;
 
     @Column(name = "CAPACITY_DNT")
-    private int capacity;
+    private Integer capacity;
 
     @Column(name = "IS_ACTIVE_DNT")
-    private boolean isActive;
+    private Boolean active;
 
     @Column(name = "LOCATIN_DNT")
     private String location;
 
     @ManyToOne
     @JoinColumn(name = "ID_RTR")
-    private Restaurant restaurantId;
+    private Restaurant restaurant;
 
     @PrePersist
     protected void onCreate(){
-        isActive = true;
+        active = true;
         capacity = 0;
     }
 }

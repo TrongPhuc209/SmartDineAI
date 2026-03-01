@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.SmartDineAI.dto.restaurant.CreateRestaurantRequest;
 import com.SmartDineAI.dto.restaurant.RestaurantResponse;
+import com.SmartDineAI.dto.restaurant.UpdateRestaurantRequest;
 import com.SmartDineAI.entity.Restaurant;
 import com.SmartDineAI.exception.AppException;
 import com.SmartDineAI.exception.ErrorCode;
@@ -32,45 +33,33 @@ public class RestaurantSevice {
                                     .map(restaurantMapper::toRestaurantResponse)
                                     .toList();
     }
-    
+
     public Restaurant createRestaurant(CreateRestaurantRequest request){
         if(restaurantRepository.existsByName(request.getName())){
             throw new AppException(ErrorCode.RESTAURANT_NAME_ALREADY_EXISTS);
         }
         Restaurant restaurant = restaurantMapper.toRestaurant(request);
-        return restaurantRepository.save(restaurant);                                                    
+        return restaurantRepository.save(restaurant);
     }
-    
-    public RestaurantResponse updateRestaurant(CreateRestaurantRequest request, Long id){
+
+    public RestaurantResponse updateRestaurant(UpdateRestaurantRequest request, Long id){
         if(restaurantRepository.existsByName(request.getName())){
             throw new AppException(ErrorCode.RESTAURANT_NAME_ALREADY_EXISTS);
         }
         Restaurant restaurant = restaurantRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.ID_NOT_FOUND));
-        
-
-        restaurant.setName(request.getName());
-        restaurant.setAddress(request.getAddress());
-        restaurant.setPhoneNumber(request.getPhoneNumber());
-        restaurant.setDecription(request.getDecription());
-        restaurant.setOpenTime(request.getOpenTime());
-        restaurant.setCloseTime(request.getCloseTime());
-        
-        restaurantRepository.save(restaurant);
+        restaurantMapper.updateRestaurant(restaurant, request);
         return restaurantMapper.toRestaurantResponse(restaurant);
-        // Trong dto chưa thêm CreateAt và isActice nên update sẽ bị null
     }
-    
+
     public void deleteRestaurant(Long id){
         restaurantRepository.deleteById(id);
     }
 
-    // Search
     public List<RestaurantResponse> searchRestaurant(String name, Boolean isActive){
-        List<Restaurant> restaurants =
-        restaurantRepository.searchRestaurant(name, isActive);
-    
+        List<Restaurant> restaurants = restaurantRepository.searchRestaurant(name, isActive);
+
         return restaurants.stream()
                 .map(restaurantMapper::toRestaurantResponse)
-                .toList();                                       
+                .toList();
     }
 }

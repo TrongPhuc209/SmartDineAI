@@ -68,7 +68,7 @@ public class AuthService {
                                                     .subject(user.getUsername())
                                                     .issuer("SmartDineAI")
                                                     .issueTime(new Date())
-                                                    .claim("scope", user.getRoleId().getName())
+                                                    .claim("scope", user.getRole().getName())
                                                     .expirationTime(new Date(
                                                         Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli()
                                                     ))
@@ -119,7 +119,7 @@ public class AuthService {
         user.setPhoneNumber(request.getPhoneNumber());
         user.setFullName(request.getFullName());
         Role role = roleRepository.findById(2L).orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
-        user.setRoleId(role);
+        user.setRole(role);
 
         userRepository.save(user);
         return "Register Successful!!!";

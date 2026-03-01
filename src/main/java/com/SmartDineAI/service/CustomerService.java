@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.SmartDineAI.dto.customer.CreateCustomerRequest;
 import com.SmartDineAI.dto.customer.CustomerResponse;
+import com.SmartDineAI.dto.customer.UpdateCustomerRequest;
 import com.SmartDineAI.entity.Customer;
 import com.SmartDineAI.exception.AppException;
 import com.SmartDineAI.exception.ErrorCode;
@@ -41,15 +42,10 @@ public class CustomerService {
                 .toList();
     }
     
-    public CustomerResponse updateCustomer(Long id, CreateCustomerRequest request){
+    public CustomerResponse updateCustomer(Long id, UpdateCustomerRequest request){
         Customer customer = customerRepository.findById(id)
                             .orElseThrow(() -> new AppException(ErrorCode.ID_NOT_FOUND));
-        customer.setFullName(request.getFullName());
-        customer.setPhoneNumber(request.getPhoneNumber());
-        customer.setEmail(request.getEmail());
-        customer.setNote(request.getNote());
-        
-        customerRepository.save(customer);
+        customerMapper.updateCustomer(customer, request);
         return customerMapper.toResponse(customer);
     }
 

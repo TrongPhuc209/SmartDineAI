@@ -17,10 +17,10 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long>{
     @Query("""
         SELECT r FROM Restaurant r
         WHERE (:name IS NULL OR LOWER(r.name) LIKE LOWER(CONCAT('%', :name, '%')))
-        AND (:isActive IS NULL OR r.isActive = :isActive)
+        AND (:active IS NULL OR r.active = :active)
     """)
     List<Restaurant> searchRestaurant(
             @Param("name") String name,
-            @Param("isActive") Boolean isActive
+            @Param("active") Boolean active
     );
 }

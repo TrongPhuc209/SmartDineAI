@@ -1,9 +1,10 @@
 package com.SmartDineAI.controller;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.SmartDineAI.dto.auth.ApiResponse;
@@ -29,6 +31,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    // @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ApiResponse<User> createUser(@RequestBody @Valid CreateUserRequest request){
         ApiResponse<User> response = new ApiResponse<>();
@@ -37,14 +40,14 @@ public class UserController {
     }
 
     // @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping
+    @GetMapping("/get-all")
     public ApiResponse<List<UserResponse>> getAllUsers(){
         ApiResponse<List<UserResponse>> response = new ApiResponse<>();
         response.setResult(userService.getAllUsers());
         return response;
     }
 
-    // @PostAuthorize("hasRole('ADMIN') or returnObject.result.username == authentication.name")
+    // @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{userId}")
     public ApiResponse<UserResponse> getUserById(@PathVariable Long userId){
         ApiResponse<UserResponse> response = new ApiResponse<>();
@@ -52,20 +55,19 @@ public class UserController {
         return response;
     }
 
+    // @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/my-info")
     public ApiResponse<UserResponse> getMyInfo(){
-        UserResponse userResponse = userService.getMyInfo();
         ApiResponse<UserResponse> response = new ApiResponse<>();
-        response.setResult(userResponse);
+        response.setResult(userService.getMyInfo());
         return response;
     }
 
     // @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{userId}")
-    public ApiResponse<User> updateUser(@PathVariable @Valid Long userId, @RequestBody UpdateUserRequest request){
-        ApiResponse<User> response = new ApiResponse<>();
+    public ApiResponse<UserResponse> updateUser(@PathVariable @Valid Long userId, @RequestBody @Valid UpdateUserRequest request){
+        ApiResponse<UserResponse> response = new ApiResponse<>();
         response.setResult(userService.updateUser(userId, request));
-
         return response;
     }
 
@@ -78,13 +80,25 @@ public class UserController {
         return response;
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    // @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/all/{passwordAdmin}")
     public ApiResponse<String> deleteAllUsers(@PathVariable String passwordAdmin){
-        ApiResponse<String> response = new ApiResponse<>();
         userService.deleteAllUsers(passwordAdmin);
-        response.setMessage("deleted successfully");
-        return response;
+        return ApiResponse.<String>builder()
+                            .message("deleted successfully")
+                            .build();
     }
 
+    // @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping
+    public ApiResponse<List<UserResponse>> searchUser(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) Long roleId,
+            @RequestParam(required = false) Boolean isActive,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fromDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime toDate){
+        ApiResponse<List<UserResponse>> response = new ApiResponse<>();
+        response.setResult(userService.searchUser(keyword, roleId, isActive, fromDate, toDate));
+        return response;
+    }
 }
