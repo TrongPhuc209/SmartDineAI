@@ -18,9 +18,9 @@ public class UpdateReservationRequest {
     private LocalDateTime endTime;
     private int guestCount;
 
-    private Long customerId;
+    private Long customerId; // không nên
     private Long diningTableId;
-    private Long restaurantId;
+    private Long restaurantId; // không nên
     private Long reservationStatusId;
-    private Long userId;
+    private Long userId; // không nên
 }

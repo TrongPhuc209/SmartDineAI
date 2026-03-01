@@ -29,7 +29,7 @@ public class Payment {
     private BigDecimal amount;
 
     @Column(name = "METHOD_PM")
-    private String statusNam;
+    private String method;
     
     @Column(name = "STATUS_PM")
     private String decription;
