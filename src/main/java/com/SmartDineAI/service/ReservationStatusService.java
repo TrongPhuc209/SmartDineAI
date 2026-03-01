@@ -10,6 +10,4 @@ public class ReservationStatusService {
     @Autowired
     ReservationStatusRepository reservationStatusRepository;
 
-
-    
 }

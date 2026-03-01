@@ -21,6 +21,8 @@ public enum ErrorCode {
     INVALID_FORMAT_RESTAURANT_ADDRESS(400, "Invalid restaurant name format. Must be 10-100 characters"),
     INVALID_FORMAT_RESTAURANT_PHONE_NUMBER(400, "Invalid phone number format. Must be numeric and up to 15 digits"),
     
+    INVALID_TIME_RANGE(400, "Invald time range"),
+
 
     UNAUTHENTICATED(401, "Authentication required"),
     INVALID_CREDENTIALS(401, "Invalid username or password"),
@@ -40,12 +42,16 @@ public enum ErrorCode {
     RESTAURANT_NOT_FOUND(404, "Restaurant not found"),
     RESTAURANT_NAME_NOT_FOUND(404, "Restaurant name not found"),
     DINING_TABLE_NOT_FOUND(404, "DiningTable not found"),
+    CUSTOMER_NOT_FOUND(404, "Customer not found"),
+    RESERVATION_NOT_FOUND(404, "Reservation not found"),
+    RESERVATION_STATUS_NOT_FOUND(404, "Reservation status not found"),
     
 
     USER_ALREADY_EXISTS(409, "Username already exists"),
     EMAIL_ALREADY_EXISTS(409, "Email already exists"),
     DATA_CONFLICT(409, "Data conflict"),
     RESTAURANT_NAME_ALREADY_EXISTS(409, "Restaurant name already exists"),
+    TABLE_ALREADY_BOOKED(409, "Table already booked"),
 
 
     INTERNAL_SERVER_ERROR(500, "Internal server error"),

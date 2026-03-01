@@ -29,5 +29,5 @@ public class UpdateUserRequest {
     @Digits(integer = 15, fraction = 0, message = "INVALID_FORMAT_PHONE_NUMBER")
     private String phoneNumber;
 
-    private Boolean isActive;
+    private Boolean active;
 }

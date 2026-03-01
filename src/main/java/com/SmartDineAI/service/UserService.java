@@ -94,10 +94,9 @@ public class UserService {
             role = roleRepository.findById(roleId).orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
         }
 
-        List<User> users = userRepository.searchUser(keyword, role, isActive, fromDate, toDate);
-
-        return users.stream()
-                    .map(userMapper::toResponse)
-                    .toList();
+        return userRepository.searchUser(keyword, role, isActive, fromDate, toDate)
+                            .stream()
+                            .map(userMapper::toResponse)
+                            .toList();
     }
 }
