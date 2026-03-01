@@ -47,7 +47,7 @@ public class User {
     private LocalDateTime createdAt;
 
     @Column(name = "IS_ACTIVE_US")
-    private Boolean isActive;
+    private Boolean active;
 
     @ManyToOne
     @JoinColumn(name = "ID_R")
@@ -56,6 +56,6 @@ public class User {
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
-        isActive = true;
+        active = true;
     }
 }

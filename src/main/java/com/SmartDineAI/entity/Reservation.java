@@ -38,23 +38,23 @@ public class Reservation {
 
     @ManyToOne
     @JoinColumn(name = "ID_CUS")
-    private Customer customerId;
+    private Customer customer;
 
     @ManyToOne
     @JoinColumn(name = "ID_DNT")
-    private DiningTable diningTableId;
+    private DiningTable diningTable;
 
     @ManyToOne
     @JoinColumn(name = "ID_RTR")
-    private Restaurant restaurantId;
+    private Restaurant restaurant;
 
     @ManyToOne
     @JoinColumn(name = "ID_STATUS_RS")
-    private ReservationStatus reservationStatusId;
+    private ReservationStatus reservationStatus;
 
     @ManyToOne
     @JoinColumn(name = "ID_US")
-    private User userId;
+    private User user;
 
     @PrePersist
     protected void onCreate(){

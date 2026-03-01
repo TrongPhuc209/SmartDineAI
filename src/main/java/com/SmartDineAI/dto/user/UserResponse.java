@@ -2,8 +2,6 @@ package com.SmartDineAI.dto.user;
 
 import java.time.LocalDateTime;
 
-import com.SmartDineAI.entity.Role;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,6 +20,6 @@ public class UserResponse {
     private String email;
     private String phoneNumber;
     private LocalDateTime createdAt;
-    private Boolean isActive;
-    private Role role;
+    private Boolean active;
+    private String roleName;
 }

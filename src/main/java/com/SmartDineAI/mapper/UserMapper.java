@@ -18,11 +18,11 @@ public interface UserMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "password", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "isActive", ignore = true)
+    @Mapping(target = "active", ignore = true)
     @Mapping(target = "role", ignore = true)
     User toUser(CreateUserRequest request);
 
-    @Mapping(target = "role", source = "role")
+    @Mapping(target = "roleName", source = "role.name")
     UserResponse toResponse(User user);
 
     @Mapping(target = "id", ignore = true)

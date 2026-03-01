@@ -28,14 +28,14 @@ public interface UserRepository extends JpaRepository<User, Long>{
                 LOWER(u.phoneNumber) LIKE LOWER(CONCAT('%', :keyword, '%'))
             )
         AND (:role IS NULL OR u.role = :role)
-        AND (:isActive IS NULL OR u.isActive = :isActive)
+        AND (:active IS NULL OR u.active = :active)
         AND (:fromDate IS NULL OR u.createdAt >= :fromDate)
         AND (:toDate IS NULL OR u.createdAt <= :toDate)
     """)
     List<User> searchUser(
             @Param("keyword") String keyword,
             @Param("role") Role role,
-            @Param("isActive") Boolean isActive,
+            @Param("active") Boolean isActive,
             @Param("fromDate") LocalDateTime fromDate,
             @Param("toDate") LocalDateTime toDate
     );
