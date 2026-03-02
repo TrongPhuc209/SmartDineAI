@@ -16,7 +16,7 @@ import lombok.Setter;
 public class CreateReservationRequest {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
-    private int guestCount;
+    private Integer guestCount;
 
     private Long customerId;
     private Long diningTableId;

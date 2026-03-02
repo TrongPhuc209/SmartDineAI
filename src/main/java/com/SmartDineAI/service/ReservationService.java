@@ -3,6 +3,8 @@ package com.SmartDineAI.service;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -77,11 +79,8 @@ public class ReservationService {
     }
 
     @Transactional(readOnly = true)
-    public List<ReservationResponse> getAllReservation() {
-        return reservationRepository.findAll()
-                .stream()
-                .map(reservationMapper::toResponse)
-                .toList();
+    public Page<ReservationResponse> getAllReservation(Pageable pageable) {
+        return reservationRepository.findAll(pageable).map(reservationMapper::toResponse);
     }
 
     // ========================= UPDATE =========================
@@ -102,20 +101,11 @@ public class ReservationService {
 
         reservationMapper.updateReservation(reservation, request);
 
-        reservation.setCustomer(customerRepository.findById(request.getCustomerId())
-                .orElseThrow(() -> new AppException(ErrorCode.CUSTOMER_NOT_FOUND)));
-
         reservation.setDiningTable(diningTableRepository.findById(request.getDiningTableId())
                 .orElseThrow(() -> new AppException(ErrorCode.DINING_TABLE_NOT_FOUND)));
 
-        reservation.setRestaurant(restaurantRepository.findById(request.getRestaurantId())
-                .orElseThrow(() -> new AppException(ErrorCode.RESTAURANT_NOT_FOUND)));
-
         reservation.setReservationStatus(reservationStatusRepository.findById(request.getReservationStatusId())
                 .orElseThrow(() -> new AppException(ErrorCode.RESERVATION_STATUS_NOT_FOUND)));
-
-        reservation.setUser(userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND)));
 
         reservationRepository.save(reservation);
 

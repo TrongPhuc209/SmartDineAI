@@ -1,6 +1,8 @@
 package com.SmartDineAI.service;
 
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,11 +29,9 @@ public class RestaurantSevice {
         return restaurantMapper.toRestaurantResponse(restaurant);
     }
 
-    public List<RestaurantResponse> getAllRestaurant(){
-        return restaurantRepository.findAll()
-                                    .stream()
-                                    .map(restaurantMapper::toRestaurantResponse)
-                                    .toList();
+    public Page<RestaurantResponse> getAllRestaurant(Pageable pageable){
+        return restaurantRepository.findAll(pageable)
+                .map(restaurantMapper::toRestaurantResponse);
     }
 
     public Restaurant createRestaurant(CreateRestaurantRequest request){

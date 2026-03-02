@@ -9,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,7 +26,8 @@ public class Customer {
     @Column(name = "FULL_NAME_CUS")
     private String fullName;
 
-    @Column(name = "PHONE_CUS")
+    @Column(name = "PHONE_CUS", unique = true)
+    @NotNull
     private String phoneNumber;
 
     @Column(name = "EMAIL_CUS")

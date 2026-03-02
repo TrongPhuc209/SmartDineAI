@@ -1,7 +1,7 @@
-package com.SmartDineAI.controller;
+package com.SmartDineAI.controller.Admin;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.SmartDineAI.dto.auth.ApiResponse;
@@ -44,11 +45,12 @@ public class CustomerController {
     }
 
     // @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping
-    public ApiResponse<List<CustomerResponse>> getAllCustomer(){
-        ApiResponse<List<CustomerResponse>> response = new ApiResponse<>();
-        response.setResult(customerService.getAllCustomer());
-        return response;
+    @GetMapping("/get-all")
+    public ApiResponse<Page<CustomerResponse>> getAllCustomer(Pageable pageable){
+        Page<CustomerResponse> result = customerService.getAllCustomer(pageable);
+        return ApiResponse.<Page<CustomerResponse>>builder()
+                .result(result)
+                .build();
     }
 
     // @PreAuthorize("hasRole('ADMIN')")
@@ -65,5 +67,13 @@ public class CustomerController {
         customerService.deleteCustomer(id);
         response.setMessage("Customer deleted successfully");
         return response;
+    }
+
+    @GetMapping
+    public ApiResponse<Page<CustomerResponse>> searchCustomer(Pageable pageable, 
+                                                        @RequestParam(required = false) String phoneNumber){
+        return ApiResponse.<Page<CustomerResponse>>builder().result(customerService
+                                                        .searchCustomer(pageable, phoneNumber))
+                                                        .build();
     }
 }

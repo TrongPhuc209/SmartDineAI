@@ -1,6 +1,7 @@
-package com.SmartDineAI.controller;
+package com.SmartDineAI.controller.Admin;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -44,10 +45,11 @@ public class PaymentController {
 
     // @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/get-all")
-    public ApiResponse<List<PaymentResponse>> getAllPayment(){
-        ApiResponse<List<PaymentResponse>> response = new ApiResponse<>();
-        response.setResult(paymentService.getAllPayment());
-        return response;
+    public ApiResponse<Page<PaymentResponse>> getAllPayment(Pageable pageable){
+        Page<PaymentResponse> result = paymentService.getAllPayment(pageable);
+        return ApiResponse.<Page<PaymentResponse>>builder()
+                .result(result)
+                .build();
     }
 
     // @PreAuthorize("hasRole('ADMIN')")

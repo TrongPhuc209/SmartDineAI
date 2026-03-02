@@ -1,6 +1,7 @@
 package com.SmartDineAI.service;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,11 +36,9 @@ public class CustomerService {
         return customerMapper.toResponse(customer);
     }
 
-    public List<CustomerResponse> getAllCustomer(){
-        return customerRepository.findAll()
-                .stream()
-                .map(customerMapper::toResponse)
-                .toList();
+    public Page<CustomerResponse> getAllCustomer(Pageable pageable){
+        return customerRepository.findAll(pageable)
+                .map(customerMapper::toResponse);
     }
     
     public CustomerResponse updateCustomer(Long id, UpdateCustomerRequest request){
@@ -51,5 +50,9 @@ public class CustomerService {
 
     public void deleteCustomer(Long id){
         customerRepository.deleteById(id);
+    }
+
+    public Page<CustomerResponse> searchCustomer(Pageable pageable ,String phoneNumber){
+        return customerRepository.searchCustomer(pageable ,phoneNumber).map(customerMapper::toResponse);
     }
 }

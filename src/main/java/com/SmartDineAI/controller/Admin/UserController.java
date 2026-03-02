@@ -1,7 +1,9 @@
-package com.SmartDineAI.controller;
+package com.SmartDineAI.controller.Admin;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -41,10 +43,11 @@ public class UserController {
 
     // @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/get-all")
-    public ApiResponse<List<UserResponse>> getAllUsers(){
-        ApiResponse<List<UserResponse>> response = new ApiResponse<>();
-        response.setResult(userService.getAllUsers());
-        return response;
+    public ApiResponse<Page<UserResponse>> getAllUsers(Pageable pageable){
+        Page<UserResponse> result = userService.getAllUsers(pageable);
+        return ApiResponse.<Page<UserResponse>>builder()
+                .result(result)
+                .build();
     }
 
     // @PreAuthorize("hasRole('ADMIN')")

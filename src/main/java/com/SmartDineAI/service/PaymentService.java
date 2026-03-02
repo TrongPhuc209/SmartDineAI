@@ -1,6 +1,7 @@
 package com.SmartDineAI.service;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -44,11 +45,9 @@ public class PaymentService {
                                                         .orElseThrow(() -> new AppException(ErrorCode.PAYMENT_NOT_FOUND)));
     }
 
-    public List<PaymentResponse> getAllPayment(){
-        return paymentRepository.findAll()
-                                .stream()
-                                .map(paymentMapper::toResponse)
-                                .toList();
+    public Page<PaymentResponse> getAllPayment(Pageable pageable){
+        return paymentRepository.findAll(pageable)
+                                .map(paymentMapper::toResponse);
     }
 
     public PaymentResponse updatePayment(Long paymentId, UpdatePaymentRequest request){

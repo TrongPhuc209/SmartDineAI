@@ -39,4 +39,5 @@ public interface ReservationMapper {
     @Mapping(target = "reservationStatus", ignore = true)
     @Mapping(target = "user", ignore = true)
     void updateReservation(@MappingTarget Reservation reservation, UpdateReservationRequest request);
+
 }

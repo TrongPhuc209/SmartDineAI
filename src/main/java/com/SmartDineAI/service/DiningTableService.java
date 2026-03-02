@@ -1,6 +1,8 @@
 package com.SmartDineAI.service;
 
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,11 +44,9 @@ public class DiningTableService {
         return diningTableMapper.toResponse(diningTable);
     }
 
-    public List<DiningTableResponse> getAllDiningTable(){
-        return diningTableRepository.findAll()
-                .stream()
-                .map(diningTableMapper::toResponse)
-                .toList();
+    public Page<DiningTableResponse> getAllDiningTable(Pageable pageable){
+        return diningTableRepository.findAll(pageable)
+                .map(diningTableMapper::toResponse);
     }
     
     public DiningTableResponse updateDiningTable(Long id, UpdateDiningTableRequest request){

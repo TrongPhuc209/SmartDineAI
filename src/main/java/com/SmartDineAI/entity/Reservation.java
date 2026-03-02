@@ -31,7 +31,7 @@ public class Reservation {
     private LocalDateTime endTime;
 
     @Column(name = "GUEST_COUNT_RSVT")
-    private int guestCount;
+    private Integer guestCount;
 
     @Column(name = "CREATED_AT_RSVT")
     private LocalDateTime createAt;

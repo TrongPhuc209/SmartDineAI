@@ -1,6 +1,8 @@
-package com.SmartDineAI.controller;
+package com.SmartDineAI.controller.Admin;
 
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -46,10 +48,11 @@ public class DiningTableController {
 
     // @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/get-all")
-    public ApiResponse<List<DiningTableResponse>> getAllDiningTable(){
-        ApiResponse<List<DiningTableResponse>> response = new ApiResponse<>();
-        response.setResult(diningTableService.getAllDiningTable());
-        return response;
+    public ApiResponse<Page<DiningTableResponse>> getAllDiningTable(Pageable pageable){
+        Page<DiningTableResponse> result = diningTableService.getAllDiningTable(pageable);
+        return ApiResponse.<Page<DiningTableResponse>>builder()
+                .result(result)
+                .build();
     }
 
     // @PreAuthorize("hasRole('ADMIN')")

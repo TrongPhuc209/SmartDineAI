@@ -1,9 +1,11 @@
-package com.SmartDineAI.controller;
+package com.SmartDineAI.controller.Admin;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -47,10 +49,9 @@ public class ReservationController {
 
     // @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/get-all")
-    public ApiResponse<List<ReservationResponse>> getAllReservation(){
-        ApiResponse<List<ReservationResponse>> response = new ApiResponse<>();
-        response.setResult(reservationService.getAllReservation());
-        return response;
+    public ApiResponse<Page<ReservationResponse>> getAllReservation(Pageable pageable){
+        Page<ReservationResponse> response = reservationService.getAllReservation(pageable);
+        return ApiResponse.<Page<ReservationResponse>>builder().result(response).build();
     }
 
     // @PreAuthorize("hasRole('ADMIN')")

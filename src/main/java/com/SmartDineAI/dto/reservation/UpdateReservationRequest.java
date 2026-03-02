@@ -16,11 +16,8 @@ import lombok.Setter;
 public class UpdateReservationRequest {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
-    private int guestCount;
+    private Integer guestCount;
 
-    private Long customerId; // không nên
     private Long diningTableId;
-    private Long restaurantId; // không nên
     private Long reservationStatusId;
-    private Long userId; // không nên
 }

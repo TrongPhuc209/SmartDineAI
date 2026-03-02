@@ -16,7 +16,7 @@ import lombok.Setter;
 public class ReservationResponse {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
-    private int guestCount;
+    private Integer guestCount;
     private LocalDateTime createAt;
 
     private String customerName;

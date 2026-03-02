@@ -2,6 +2,8 @@ package com.SmartDineAI.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -54,11 +56,9 @@ public class UserService {
         return userMapper.toResponse(user);
     }
 
-    public List<UserResponse> getAllUsers(){
-        return userRepository.findAll()
-                                .stream()
-                                .map(userMapper::toResponse)
-                                .toList();
+    public Page<UserResponse> getAllUsers(Pageable pageable){
+        return userRepository.findAll(pageable)
+                                .map(userMapper::toResponse);
     }
 
     public UserResponse updateUser(Long userId, UpdateUserRequest request){
