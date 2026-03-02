@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.SmartDineAI.entity.Role;
+import com.SmartDineAI.exception.AppException;
+import com.SmartDineAI.exception.ErrorCode;
 import com.SmartDineAI.repository.RoleRepository;
 
 @Service
@@ -24,5 +26,10 @@ public class RoleService {
 
     public List<Role> getAllRoles(){
         return roleRepository.findAll();
+    }
+
+    public Role getRoleById(Long id){
+        return roleRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
     }
 }

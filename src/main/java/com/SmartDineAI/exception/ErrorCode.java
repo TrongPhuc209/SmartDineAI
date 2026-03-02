@@ -45,6 +45,8 @@ public enum ErrorCode {
     CUSTOMER_NOT_FOUND(404, "Customer not found"),
     RESERVATION_NOT_FOUND(404, "Reservation not found"),
     RESERVATION_STATUS_NOT_FOUND(404, "Reservation status not found"),
+    PAYMENT_NOT_FOUND(404, "Payment not found"),
+    PAYMENT_STATUS_NOT_FOUND(404, "Payment status not found"),
     
 
     USER_ALREADY_EXISTS(409, "Username already exists"),

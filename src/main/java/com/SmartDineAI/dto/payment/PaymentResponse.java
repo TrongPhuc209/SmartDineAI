@@ -17,6 +17,6 @@ public class PaymentResponse {
     private String methodName;
     private String decription;
     private LocalDateTime paidAt;
-    private String reservationName;
+    private String reservationId;
     private String paymentStatusName;
 }

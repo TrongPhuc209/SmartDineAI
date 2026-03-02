@@ -29,7 +29,7 @@ public class Payment {
     private BigDecimal amount;
 
     @Column(name = "METHOD_PM")
-    private String method;
+    private String methodName;
     
     @Column(name = "STATUS_PM")
     private String decription;
@@ -39,11 +39,11 @@ public class Payment {
 
     @ManyToOne
     @JoinColumn(name = "ID_RSVT")
-    private Reservation reservationId;
+    private Reservation reservation;
 
     @ManyToOne
     @JoinColumn(name = "ID_STATUS_PS")
-    private PaymentStatus paymentStatusId;
+    private PaymentStatus paymentStatus;
 
     @PrePersist
     protected void onCreate(){
