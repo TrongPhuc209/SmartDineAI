@@ -21,7 +21,6 @@ public interface DiningTableMapper {
     DiningTable toDiningTable(CreateDiningTableRequest request);
     
     @Mapping(target = "restaurantId", ignore = true)
-    @Mapping(target = "active", ignore = true)
     DiningTableResponse toResponse(DiningTable diningTable);
     
     @Mapping(target = "id", ignore = true)

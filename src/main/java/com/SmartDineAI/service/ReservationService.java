@@ -5,15 +5,24 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.SmartDineAI.dto.diningTable.DiningTableResponse;
 import com.SmartDineAI.dto.reservation.CreateReservationRequest;
 import com.SmartDineAI.dto.reservation.ReservationResponse;
 import com.SmartDineAI.dto.reservation.UpdateReservationRequest;
+import com.SmartDineAI.entity.Customer;
+import com.SmartDineAI.entity.DiningTable;
 import com.SmartDineAI.entity.Reservation;
+import com.SmartDineAI.entity.ReservationStatus;
+import com.SmartDineAI.entity.User;
 import com.SmartDineAI.exception.AppException;
 import com.SmartDineAI.exception.ErrorCode;
+import com.SmartDineAI.mapper.DiningTableMapper;
 import com.SmartDineAI.mapper.ReservationMapper;
 import com.SmartDineAI.repository.*;
 
@@ -26,21 +35,21 @@ public class ReservationService {
 
     private final ReservationRepository reservationRepository;
     private final ReservationMapper reservationMapper;
-    private final CustomerRepository customerRepository;
     private final DiningTableRepository diningTableRepository;
-    private final RestaurantRepository restaurantRepository;
     private final ReservationStatusRepository reservationStatusRepository;
-    private final UserRepository userRepository;
+    private final DiningTableMapper diningTableMapper;
+    private final CustomerRepository customerRepository;
+    private final UserRepository userrepository;
 
     // ========================= CREATE =========================
 
     public ReservationResponse createReservation(CreateReservationRequest request) {
 
-        validateTimeRange(request.getStartTime(), request.getEndTime());
-
-        var diningTable = diningTableRepository.findById(request.getDiningTableId())
+        DiningTable diningTable = diningTableRepository.findById(request.getDiningTableId())
                 .orElseThrow(() -> new AppException(ErrorCode.DINING_TABLE_NOT_FOUND));
 
+        validateTimeRange(request.getStartTime(), request.getEndTime());
+        validGuestCount(request.getGuestCount(), diningTable.getCapacity());
         checkOverlapping(
                 null,
                 request.getDiningTableId(),
@@ -48,21 +57,25 @@ public class ReservationService {
                 request.getEndTime()
         );
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        String scope = jwt.getClaimAsString("scope");
+        String userName = jwt.getSubject();
+        Customer customer;
+        if(scope.equals("ADMIN")){
+            if(request.getPhoneNumber().isBlank()){throw new AppException(ErrorCode.INVALID_FORMAT_PHONE_NUMBER);}
+            customer = resolveCustomer(request.getPhoneNumber(), null);
+        } else{
+            customer = resolveCustomer(null, userName);
+        }
+        
         Reservation reservation = reservationMapper.toReservation(request);
 
-        reservation.setCustomer(customerRepository.findById(request.getCustomerId())
-                .orElseThrow(() -> new AppException(ErrorCode.CUSTOMER_NOT_FOUND)));
-
+        reservation.setCustomer(customer);
         reservation.setDiningTable(diningTable);
-
-        reservation.setRestaurant(restaurantRepository.findById(request.getRestaurantId())
-                .orElseThrow(() -> new AppException(ErrorCode.RESTAURANT_NOT_FOUND)));
-
-        reservation.setReservationStatus(reservationStatusRepository.findById(request.getReservationStatusId())
-                .orElseThrow(() -> new AppException(ErrorCode.RESERVATION_STATUS_NOT_FOUND)));
-
-        reservation.setUser(userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND)));
+        reservation.setReservationStatus(reservationStatusRepository.findById(1L).orElseThrow());
+        reservation.setUser(userrepository.findByUsername(userName).orElseThrow());
+        reservation.setRestaurant(diningTable.getRestaurant());
 
         reservationRepository.save(reservation);
 
@@ -81,6 +94,25 @@ public class ReservationService {
     @Transactional(readOnly = true)
     public Page<ReservationResponse> getAllReservation(Pageable pageable) {
         return reservationRepository.findAll(pageable).map(reservationMapper::toResponse);
+    }
+
+    public Page<ReservationResponse> myReservation(Pageable pageable){
+        String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userrepository.findByUsername(currentUser).orElseThrow();
+        return reservationRepository.findByCustomerPhoneNumber(user.getPhoneNumber(), 
+                                                                pageable).map(reservationMapper::toResponse);
+    }
+
+    public ReservationResponse myReservation(Long reservationId){
+        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userrepository.findByUsername(userName).orElseThrow();
+        Reservation reservation = reservationRepository.findById(reservationId)
+                                                        .orElseThrow(() -> new AppException(ErrorCode.RESERVATION_NOT_FOUND));
+        String phoneNumber = reservation.getCustomer().getPhoneNumber();
+        if(!phoneNumber.equals(user.getPhoneNumber())){
+            throw new AppException(ErrorCode.ACCESS_DENIED);
+        }
+        return reservationMapper.toResponse(reservation);
     }
 
     // ========================= UPDATE =========================
@@ -121,6 +153,24 @@ public class ReservationService {
         reservationRepository.delete(reservation);
     }
 
+    public void myDelete(Long reservationId){
+        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userrepository.findByUsername(userName).orElseThrow();
+        Reservation reservation = reservationRepository.findById(reservationId)
+                                                        .orElseThrow(() -> new AppException(ErrorCode.RESERVATION_NOT_FOUND));
+        String phoneNumber = reservation.getCustomer().getPhoneNumber();
+        if(!phoneNumber.equals(user.getPhoneNumber())){
+            throw new AppException(ErrorCode.ACCESS_DENIED);
+        }
+
+        validateCancelReservation(reservation);
+
+        ReservationStatus reservationStatus = reservationStatusRepository.findByStatusName("CANCELLED_BY_CUSTOMER");
+        reservation.setReservationStatus(reservationStatus);
+        reservationRepository.save(reservation);
+
+    }
+
     // ========================= SEARCH =========================
 
     @Transactional(readOnly = true)
@@ -137,12 +187,24 @@ public class ReservationService {
                 .map(reservationMapper::toResponse)
                 .toList();
     }
+    // ========================= BUSINESS METHOD =========================
+
+    public Page<DiningTableResponse> findAvailableTablesByTime(LocalDateTime start, LocalDateTime end, Pageable pageable){
+        return diningTableRepository.findAvailableTablesByTime(start, end, pageable).map(diningTableMapper::toResponse);
+    }
+
 
     // ========================= PRIVATE METHODS =========================
 
     private void validateTimeRange(LocalDateTime start, LocalDateTime end) {
-        if (start == null || end == null || !start.isBefore(end)) {
+        if (start == null || end == null || !start.isBefore(end) || start.isBefore(LocalDateTime.now())) {
             throw new AppException(ErrorCode.INVALID_TIME_RANGE);
+        }
+    }
+
+    private void validGuestCount(Integer guestCount, Integer capacity){
+        if(guestCount > capacity){
+               throw new AppException(ErrorCode.EXCEED_TABLE_CAPACITY);
         }
     }
 
@@ -165,5 +227,34 @@ public class ReservationService {
         if (exists) {
             throw new AppException(ErrorCode.TABLE_ALREADY_BOOKED);
         }
+    }
+
+    public Customer resolveCustomer(String phoneNumber, String userName){
+        if(phoneNumber == null && userName != null && !userName.isEmpty()){
+            User currentUser = userrepository.findByUsername(userName).orElseThrow();
+            phoneNumber = currentUser.getPhoneNumber();    
+        }
+
+        Customer customer = customerRepository.findByPhoneNumber(phoneNumber);
+
+        if(customer != null){
+            return customer;
+        } else {
+            customer = Customer.builder()
+                                .fullName("Customer")
+                                .phoneNumber(phoneNumber)
+                                .build();
+            return customerRepository.save(customer);            
+        }
+    }
+
+    private void validateCancelReservation(Reservation reservation){
+        String myStatusName = reservation.getReservationStatus().getStatusName();
+        LocalDateTime myStarTime = reservation.getStartTime();
+        if(!myStatusName.equals("PENDING") && !myStatusName.equals("CONFIRMED")){
+            throw new AppException(ErrorCode.INVALID_RESERVATION_STATUS);
+        } if(LocalDateTime.now().isAfter(myStarTime.minusHours(1))){
+            throw new AppException(ErrorCode.INVALID_CANCEL_TIME);
+        } 
     }
 }

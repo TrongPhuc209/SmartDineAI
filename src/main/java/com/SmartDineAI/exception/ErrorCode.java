@@ -22,7 +22,9 @@ public enum ErrorCode {
     INVALID_FORMAT_RESTAURANT_PHONE_NUMBER(400, "Invalid phone number format. Must be numeric and up to 15 digits"),
     
     INVALID_TIME_RANGE(400, "Invald time range"),
-
+    
+    INVALID_RESERVATION_STATUS(400, "Invald reservation status"),
+    INVALID_CANCEL_TIME(400, "Mealtime is about to begin"),
 
     UNAUTHENTICATED(401, "Authentication required"),
     INVALID_CREDENTIALS(401, "Invalid username or password"),
@@ -54,6 +56,7 @@ public enum ErrorCode {
     DATA_CONFLICT(409, "Data conflict"),
     RESTAURANT_NAME_ALREADY_EXISTS(409, "Restaurant name already exists"),
     TABLE_ALREADY_BOOKED(409, "Table already booked"),
+    EXCEED_TABLE_CAPACITY(409, "Exceed table capacity"),
 
 
     INTERNAL_SERVER_ERROR(500, "Internal server error"),

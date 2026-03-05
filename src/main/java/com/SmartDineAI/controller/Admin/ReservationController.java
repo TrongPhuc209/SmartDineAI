@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.SmartDineAI.dto.auth.ApiResponse;
+import com.SmartDineAI.dto.diningTable.DiningTableResponse;
 import com.SmartDineAI.dto.reservation.CreateReservationRequest;
 import com.SmartDineAI.dto.reservation.ReservationResponse;
 import com.SmartDineAI.dto.reservation.UpdateReservationRequest;
@@ -53,6 +54,15 @@ public class ReservationController {
         Page<ReservationResponse> response = reservationService.getAllReservation(pageable);
         return ApiResponse.<Page<ReservationResponse>>builder().result(response).build();
     }
+    
+    // @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/my")
+    public ApiResponse<Page<ReservationResponse>> myReservation(Pageable pageable){
+        return ApiResponse.<Page<ReservationResponse>>builder()
+                                                    .result(reservationService
+                                                            .myReservation(pageable))
+                                                    .build();
+    } 
 
     // @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
@@ -72,16 +82,42 @@ public class ReservationController {
     }
 
     // @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/my/{id}")
+    public ApiResponse<String> myDelete(@PathVariable Long id){
+        reservationService.myDelete(id);
+        return ApiResponse.<String>builder()
+                .message("Reservation deleted successfully")
+                .build();
+    }
+
+    // @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public List<ReservationResponse> searchReservations(
-            @RequestParam(required = false) Long restaurantId,
-            @RequestParam(required = false) Long statusId,
-            @RequestParam(required = false) LocalDateTime from,
-            @RequestParam(required = false) LocalDateTime to,
-            @RequestParam(required = false) String keyword
+        @RequestParam(required = false) Long restaurantId,
+        @RequestParam(required = false) Long statusId,
+        @RequestParam(required = false) LocalDateTime from,
+        @RequestParam(required = false) LocalDateTime to,
+        @RequestParam(required = false) String keyword
     ) {
         return reservationService.searchReservation(
-                restaurantId, statusId, from, to, keyword
+            restaurantId, statusId, from, to, keyword
         );
+    }
+    
+    // @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/available")
+    public Page<DiningTableResponse> findAvailableTablesByTime(
+            @RequestParam LocalDateTime start, 
+            @RequestParam LocalDateTime end, 
+            Pageable pageable
+    ) {
+        return reservationService.findAvailableTablesByTime(start, end, pageable);
+    }
+
+    @GetMapping("/my/{id}")
+    public ApiResponse<ReservationResponse> check(@PathVariable Long id){
+        return ApiResponse.<ReservationResponse>builder()
+                                    .result(reservationService.myReservation(id))
+                                    .build();
     }
 }

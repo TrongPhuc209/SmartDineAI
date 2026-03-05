@@ -17,10 +17,6 @@ public class CreateReservationRequest {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private Integer guestCount;
-
-    private Long customerId;
     private Long diningTableId;
-    private Long restaurantId;
-    private Long reservationStatusId;
-    private Long userId;
+    private String phoneNumber;
 }

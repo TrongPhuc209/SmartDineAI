@@ -5,7 +5,8 @@ import org.springframework.stereotype.Repository;
 
 import com.SmartDineAI.entity.ReservationStatus;
 
+
 @Repository
 public interface ReservationStatusRepository extends JpaRepository<ReservationStatus, Long>{
-    
+    ReservationStatus findByStatusName(String statusName);
 }

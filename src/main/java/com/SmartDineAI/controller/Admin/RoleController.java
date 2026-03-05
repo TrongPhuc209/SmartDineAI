@@ -2,7 +2,6 @@ package com.SmartDineAI.controller.Admin;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.access.prepost.PreAuthorize;
 
 import com.SmartDineAI.dto.auth.ApiResponse;
 

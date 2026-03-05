@@ -24,7 +24,7 @@ public interface ReservationMapper {
     @Mapping(target = "user", ignore = true)
     Reservation toReservation(CreateReservationRequest request);
 
-    @Mapping(target = "customerName", source = "customer.fullName")
+    @Mapping(target = "customerPhoneNumber", source = "customer.phoneNumber")
     @Mapping(target = "diningTableName", source = "diningTable.tableCode")
     @Mapping(target = "restaurantName", source = "restaurant.name")
     @Mapping(target = "reservationStatusName", source = "reservationStatus.statusName")

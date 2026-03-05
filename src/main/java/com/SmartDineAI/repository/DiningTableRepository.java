@@ -1,7 +1,10 @@
 package com.SmartDineAI.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -23,5 +26,22 @@ public interface DiningTableRepository extends JpaRepository<DiningTable, Long>{
         @Param("capacity") Integer capacity,
         @Param("active") Boolean active,
         @Param("location") String location
+    );
+
+    @Query("""
+        SELECT dt FROM DiningTable dt
+        WHERE dt.active = true
+        AND NOT EXISTS (
+            SELECT r FROM Reservation r
+            WHERE r.diningTable = dt
+            AND r.reservationStatus.statusName IN ('CONFIRMED', 'PENDING')
+            AND r.startTime < :endTime
+            AND r.endTime > :startTime
+        )
+    """)
+    Page<DiningTable> findAvailableTablesByTime(
+            @Param("startTime") LocalDateTime startTime,
+            @Param("endTime") LocalDateTime endTime,
+            Pageable pageable
     );
 }

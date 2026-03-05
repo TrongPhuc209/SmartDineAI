@@ -19,7 +19,7 @@ public class ReservationResponse {
     private Integer guestCount;
     private LocalDateTime createAt;
 
-    private String customerName;
+    private String customerPhoneNumber;
     private String diningTableName;
     private String restaurantName;
     private String reservationStatusName;
