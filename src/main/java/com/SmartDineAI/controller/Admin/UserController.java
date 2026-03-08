@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +27,7 @@ import com.SmartDineAI.service.UserService;
 
 import jakarta.validation.Valid;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/admin/users")
 public class UserController {
@@ -72,6 +74,11 @@ public class UserController {
         response.setResult(userService.updateUser(userId, request));
         return response;
     }
+    
+    @PutMapping("/active/{userId}")
+    public void updateActive(@PathVariable @Valid Long userId){
+        userService.updateActive(userId);
+    }
 
     // @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{userId}")
@@ -93,14 +100,15 @@ public class UserController {
 
     // @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
-    public ApiResponse<List<UserResponse>> searchUser(
+    public ApiResponse<Page<UserResponse>> searchUser(
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) Long roleId,
             @RequestParam(required = false) Boolean isActive,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fromDate,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime toDate){
-        ApiResponse<List<UserResponse>> response = new ApiResponse<>();
-        response.setResult(userService.searchUser(keyword, roleId, isActive, fromDate, toDate));
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime toDate,
+            Pageable pageable){
+        ApiResponse<Page<UserResponse>> response = new ApiResponse<>();
+        response.setResult(userService.searchUser(keyword, roleId, isActive, fromDate, toDate, pageable));
         return response;
     }
 }

@@ -9,9 +9,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class DiningTableResponse {
+    private Long id;
     private String tableCode;
     private int capacity;
     private boolean active;
     private String location;
-    private Long restaurantId;
+    private String restaurantName;
 }

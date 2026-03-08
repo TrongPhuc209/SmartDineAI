@@ -33,4 +33,6 @@ public class CreateRestaurantRequest {
 
     private LocalTime closeTime;
 
+    private String imageUrl;
+
 }

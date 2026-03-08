@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import com.SmartDineAI.dto.auth.ApiResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.SmartDineAI.entity.Role;
 import com.SmartDineAI.service.RoleService;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/admin/roles")
 public class RoleController {

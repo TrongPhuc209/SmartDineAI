@@ -113,6 +113,10 @@ public class AuthService {
             throw new AppException(ErrorCode.USER_ALREADY_EXISTS);
         }
 
+        if(userRepository.existsByPhoneNumber(request.getPhoneNumber())){
+            throw new AppException(ErrorCode.PHONE_NUMBER_ALREADY_EXISTS);
+        }
+
         user.setUsername(request.getUsername());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setEmail(request.getEmail());

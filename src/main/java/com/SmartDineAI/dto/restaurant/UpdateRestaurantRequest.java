@@ -33,4 +33,5 @@ public class UpdateRestaurantRequest {
 
     private Boolean active;
 
+    private String imageUrl;
 }

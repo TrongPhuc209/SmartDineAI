@@ -1,12 +1,12 @@
 package com.SmartDineAI.controller.Admin;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +26,7 @@ import com.SmartDineAI.service.ReservationService;
 
 import jakarta.validation.Valid;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/admin/reservations")
 public class ReservationController {
@@ -92,16 +93,22 @@ public class ReservationController {
 
     // @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
-    public List<ReservationResponse> searchReservations(
+    public ApiResponse<Page<ReservationResponse>> searchReservations(
         @RequestParam(required = false) Long restaurantId,
         @RequestParam(required = false) Long statusId,
         @RequestParam(required = false) LocalDateTime from,
         @RequestParam(required = false) LocalDateTime to,
-        @RequestParam(required = false) String keyword
+        @RequestParam(required = false) String keyword,
+        Pageable pageable
     ) {
-        return reservationService.searchReservation(
-            restaurantId, statusId, from, to, keyword
-        );
+        return ApiResponse.<Page<ReservationResponse>>builder()
+                                                    .result(reservationService.searchReservation(restaurantId, 
+                                                                                                statusId, 
+                                                                                                from, 
+                                                                                                to, 
+                                                                                                keyword,
+                                                                                                pageable))
+                                                    .build(); 
     }
     
     // @PreAuthorize("hasRole('ADMIN')")

@@ -15,17 +15,20 @@ import com.SmartDineAI.entity.DiningTable;
 @Repository
 public interface DiningTableRepository extends JpaRepository<DiningTable, Long>{
     @Query("""
-        SELECT d FROM DiningTable d 
+        SELECT d FROM DiningTable d
         WHERE (:tableCode IS NULL OR LOWER(d.tableCode) LIKE LOWER(CONCAT('%', :tableCode, '%')))
         AND (:capacity IS NULL OR d.capacity = :capacity)
         AND (:active IS NULL OR d.active = :active)
         AND (:location IS NULL OR LOWER(d.location) LIKE LOWER(CONCAT('%', :location, '%')))
+        AND (:restaurantId IS NULL OR d.restaurant.id = :restaurantId)
     """)
-    List<DiningTable> searchDiningTable(
-        @Param("tableCode") String tableCode,
-        @Param("capacity") Integer capacity,
-        @Param("active") Boolean active,
-        @Param("location") String location
+    Page<DiningTable> searchDiningTable(
+            @Param("tableCode") String tableCode,
+            @Param("capacity") Integer capacity,
+            @Param("active") Boolean active,
+            @Param("location") String location,
+            @Param("restaurantId") Long restaurantId,
+            Pageable pageable
     );
 
     @Query("""
@@ -44,4 +47,9 @@ public interface DiningTableRepository extends JpaRepository<DiningTable, Long>{
             @Param("endTime") LocalDateTime endTime,
             Pageable pageable
     );
+
+    List<DiningTable> findByRestaurantIdAndCapacityGreaterThanEqual(
+        Long restaurantId,
+        Integer capacity
+);
 }

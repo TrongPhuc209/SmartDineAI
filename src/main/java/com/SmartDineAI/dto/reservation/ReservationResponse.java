@@ -14,6 +14,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class ReservationResponse {
+    private Long id;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private Integer guestCount;

@@ -22,16 +22,22 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             (:from IS NULL OR :to IS NULL)
             OR (r.startTime < :to AND r.endTime > :from)
         )
-        AND (:keyword IS NULL OR LOWER(r.customer.fullName)
-            LIKE LOWER(CONCAT('%', :keyword, '%')))
+        AND (
+            :keyword IS NULL
+            OR LOWER(r.customer.fullName) LIKE LOWER(CONCAT('%', :keyword, '%'))
+            OR LOWER(r.customer.phoneNumber) LIKE LOWER(CONCAT('%', :keyword, '%'))
+            OR LOWER(r.diningTable.tableCode) LIKE LOWER(CONCAT('%', :keyword, '%'))
+            OR LOWER(r.restaurant.name) LIKE LOWER(CONCAT('%', :keyword, '%'))
+        )
         ORDER BY r.startTime DESC
     """)
-    List<Reservation> searchReservation(
-            @Param("restaurantId") Long restaurantId,
-            @Param("statusId") Long statusId,
-            @Param("from") LocalDateTime from,
-            @Param("to") LocalDateTime to,
-            @Param("keyword") String keyword
+    Page<Reservation> searchReservation(
+            Long restaurantId,
+            Long statusId,
+            LocalDateTime from,
+            LocalDateTime to,
+            String keyword,
+            Pageable pageable
     );
 
     @Query("""
@@ -66,4 +72,17 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
     Page<Reservation> findByCustomerPhoneNumber(String phoneNumber, Pageable pageable);
     List<Reservation> findByCustomerPhoneNumber(String phoneNumber);
+
+    @Query("""
+    SELECT COUNT(r) > 0
+    FROM Reservation r
+    WHERE r.diningTable.id = :tableId
+    AND r.startTime < :endTime
+    AND r.endTime > :startTime
+    """)
+    boolean existsOverlap(
+            Long tableId,
+            LocalDateTime startTime,
+            LocalDateTime endTime
+    );
 }

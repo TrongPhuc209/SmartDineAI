@@ -40,7 +40,7 @@ public class User {
     @Column(name = "EMAIL_US")
     private String email;
 
-    @Column(name = "PHONE_US")
+    @Column(name = "PHONE_US", unique = true)
     private String phoneNumber;
 
     @Column(name = "CREATED_AT_US")

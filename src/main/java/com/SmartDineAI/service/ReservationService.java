@@ -40,6 +40,7 @@ public class ReservationService {
     private final DiningTableMapper diningTableMapper;
     private final CustomerRepository customerRepository;
     private final UserRepository userrepository;
+    private final RestaurantRepository restaurantRepository;
 
     // ========================= CREATE =========================
 
@@ -59,23 +60,63 @@ public class ReservationService {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Jwt jwt = (Jwt) authentication.getPrincipal();
-        String scope = jwt.getClaimAsString("scope");
         String userName = jwt.getSubject();
-        Customer customer;
-        if(scope.equals("ADMIN")){
-            if(request.getPhoneNumber().isBlank()){throw new AppException(ErrorCode.INVALID_FORMAT_PHONE_NUMBER);}
-            customer = resolveCustomer(request.getPhoneNumber(), null);
-        } else{
-            customer = resolveCustomer(null, userName);
+
+        if(request.getPhoneNumber().isBlank()){
+            throw new AppException(ErrorCode.INVALID_FORMAT_PHONE_NUMBER);
         }
-        
+
+        Customer customer = resolveCustomer(request.getPhoneNumber(), null);
+
         Reservation reservation = reservationMapper.toReservation(request);
 
         reservation.setCustomer(customer);
         reservation.setDiningTable(diningTable);
-        reservation.setReservationStatus(reservationStatusRepository.findById(1L).orElseThrow());
+        reservation.setReservationStatus(
+                reservationStatusRepository.findById(1L).orElseThrow()
+        );
         reservation.setUser(userrepository.findByUsername(userName).orElseThrow());
         reservation.setRestaurant(diningTable.getRestaurant());
+
+        reservationRepository.save(reservation);
+
+        return reservationMapper.toResponse(reservation);
+    }
+
+
+    public ReservationResponse createReservationById(CreateReservationRequest request, Long restaurantId) {
+
+        DiningTable diningTable = diningTableRepository.findById(request.getDiningTableId())
+                .orElseThrow(() -> new AppException(ErrorCode.DINING_TABLE_NOT_FOUND));
+
+        validateTimeRange(request.getStartTime(), request.getEndTime());
+        validGuestCount(request.getGuestCount(), diningTable.getCapacity());
+        checkOverlapping(
+                null,
+                request.getDiningTableId(),
+                request.getStartTime(),
+                request.getEndTime()
+        );
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        String userName = jwt.getSubject();
+
+        if(request.getPhoneNumber().isBlank()){
+            throw new AppException(ErrorCode.INVALID_FORMAT_PHONE_NUMBER);
+        }
+
+        Customer customer = resolveCustomer(request.getPhoneNumber(), null);
+
+        Reservation reservation = reservationMapper.toReservation(request);
+
+        reservation.setCustomer(customer);
+        reservation.setDiningTable(diningTable);
+        reservation.setReservationStatus(
+                reservationStatusRepository.findById(1L).orElseThrow()
+        );
+        reservation.setUser(userrepository.findByUsername(userName).orElseThrow());
+        reservation.setRestaurant(restaurantRepository.findById(restaurantId).orElseThrow());
 
         reservationRepository.save(reservation);
 
@@ -122,22 +163,42 @@ public class ReservationService {
         Reservation reservation = reservationRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.ID_NOT_FOUND));
 
-        validateTimeRange(request.getStartTime(), request.getEndTime());
+        LocalDateTime start = request.getStartTime() != null
+                ? request.getStartTime()
+                : reservation.getStartTime();
+
+        LocalDateTime end = request.getEndTime() != null
+                ? request.getEndTime()
+                : reservation.getEndTime();
+
+        Long tableId = request.getDiningTableId() != null
+                ? request.getDiningTableId()
+                : reservation.getDiningTable().getId();
+
+        validateTimeRange(start, end);
 
         checkOverlapping(
-                id, // exclude itself
-                request.getDiningTableId(),
-                request.getStartTime(),
-                request.getEndTime()
+                id,
+                tableId,
+                start,
+                end
         );
 
         reservationMapper.updateReservation(reservation, request);
 
-        reservation.setDiningTable(diningTableRepository.findById(request.getDiningTableId())
-                .orElseThrow(() -> new AppException(ErrorCode.DINING_TABLE_NOT_FOUND)));
+        if (request.getDiningTableId() != null) {
+            reservation.setDiningTable(
+                    diningTableRepository.findById(request.getDiningTableId())
+                            .orElseThrow(() -> new AppException(ErrorCode.DINING_TABLE_NOT_FOUND))
+            );
+        }
 
-        reservation.setReservationStatus(reservationStatusRepository.findById(request.getReservationStatusId())
-                .orElseThrow(() -> new AppException(ErrorCode.RESERVATION_STATUS_NOT_FOUND)));
+        if (request.getReservationStatusId() != null) {
+            reservation.setReservationStatus(
+                    reservationStatusRepository.findById(request.getReservationStatusId())
+                            .orElseThrow(() -> new AppException(ErrorCode.RESERVATION_STATUS_NOT_FOUND))
+            );
+        }
 
         reservationRepository.save(reservation);
 
@@ -174,18 +235,17 @@ public class ReservationService {
     // ========================= SEARCH =========================
 
     @Transactional(readOnly = true)
-    public List<ReservationResponse> searchReservation(
+    public Page<ReservationResponse> searchReservation(
             Long restaurantId,
             Long statusId,
             LocalDateTime from,
             LocalDateTime to,
-            String keyword) {
+            String keyword,
+            Pageable pageable) {
 
         return reservationRepository
-                .searchReservation(restaurantId, statusId, from, to, keyword)
-                .stream()
-                .map(reservationMapper::toResponse)
-                .toList();
+                .searchReservation(restaurantId, statusId, from, to, keyword, pageable)
+                .map(reservationMapper::toResponse);
     }
     // ========================= BUSINESS METHOD =========================
 

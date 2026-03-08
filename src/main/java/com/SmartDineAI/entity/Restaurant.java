@@ -10,11 +10,13 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@Data
 @Entity
 @Table(name = "restaurant")
 public class Restaurant {
@@ -46,10 +48,14 @@ public class Restaurant {
 
     @Column(name = "CREATED_AT_RTR")
     private LocalDateTime createAt;
+    
+    @Column(name = "IMAGE_URL")
+    private String imageUrl;
 
     @PrePersist
     protected void onCreate(){
         active = true;
         createAt = LocalDateTime.now();
     }
+
 }

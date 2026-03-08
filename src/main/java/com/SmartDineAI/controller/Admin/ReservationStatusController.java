@@ -3,6 +3,7 @@ package com.SmartDineAI.controller.Admin;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +13,7 @@ import com.SmartDineAI.entity.ReservationStatus;
 import com.SmartDineAI.dto.auth.ApiResponse;
 import com.SmartDineAI.service.ReservationStatusService;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/admin/reservation-statuses")
 public class ReservationStatusController {

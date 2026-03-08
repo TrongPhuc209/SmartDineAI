@@ -1,11 +1,11 @@
 package com.SmartDineAI.controller.Admin;
 
-import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,6 +24,7 @@ import com.SmartDineAI.service.DiningTableService;
 
 import jakarta.validation.Valid;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/admin/dining-tables")
 public class DiningTableController {
@@ -64,6 +65,12 @@ public class DiningTableController {
     }
 
     // @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/active/{id}")
+    public void updateActive(@PathVariable Long id){
+        diningTableService.updateActive(id);
+    }
+
+    // @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ApiResponse<String> deleteDiningTable(@PathVariable Long id){
         ApiResponse<String> response = new ApiResponse<>();
@@ -74,13 +81,27 @@ public class DiningTableController {
 
     // @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
-    public ApiResponse<List<DiningTableResponse>> searchDiningTable(
+    public ApiResponse<Page<DiningTableResponse>> searchDiningTable(
             @RequestParam(required = false) String tableCode,
             @RequestParam(required = false) Integer capacity,
             @RequestParam(required = false) Boolean active,
-            @RequestParam(required = false) String location) {
-        ApiResponse<List<DiningTableResponse>> response = new ApiResponse<>();
-        response.setResult(diningTableService.searchDiningTable(tableCode, capacity, active, location));
+            @RequestParam(required = false) String location,
+            @RequestParam(required = false) Long restaurantId,
+            Pageable pageable) {
+
+        ApiResponse<Page<DiningTableResponse>> response = new ApiResponse<>();
+
+        response.setResult(
+                diningTableService.searchDiningTable(
+                        tableCode,
+                        capacity,
+                        active,
+                        location,
+                        restaurantId,
+                        pageable
+                )
+        );
+
         return response;
     }
 }

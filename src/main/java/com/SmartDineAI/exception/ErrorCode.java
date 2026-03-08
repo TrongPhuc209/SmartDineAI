@@ -18,7 +18,7 @@ public enum ErrorCode {
     ROLE_NOT_EXIST(400, "Role does not exist"),
     // RESTAURANT
     INVALID_FORMAT_RESTAURANT_NAME(400, "Invalid restaurant name format. Must be 1-50 characters"),
-    INVALID_FORMAT_RESTAURANT_ADDRESS(400, "Invalid restaurant name format. Must be 10-100 characters"),
+    INVALID_FORMAT_RESTAURANT_ADDRESS(400, "Invalid restaurant address format. Must be 10-100 characters"),
     INVALID_FORMAT_RESTAURANT_PHONE_NUMBER(400, "Invalid phone number format. Must be numeric and up to 15 digits"),
     
     INVALID_TIME_RANGE(400, "Invald time range"),
@@ -52,6 +52,7 @@ public enum ErrorCode {
     
 
     USER_ALREADY_EXISTS(409, "Username already exists"),
+    PHONE_NUMBER_ALREADY_EXISTS(409, "Phone number already exists"),
     EMAIL_ALREADY_EXISTS(409, "Email already exists"),
     DATA_CONFLICT(409, "Data conflict"),
     RESTAURANT_NAME_ALREADY_EXISTS(409, "Restaurant name already exists"),

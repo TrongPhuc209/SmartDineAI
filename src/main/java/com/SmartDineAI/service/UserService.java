@@ -36,6 +36,9 @@ public class UserService {
         if(userRepository.existsByUsername(request.getUsername())){
             throw new AppException(ErrorCode.USER_ALREADY_EXISTS);
         }
+        if(userRepository.existsByPhoneNumber(request.getPhoneNumber())){
+            throw new AppException(ErrorCode.PHONE_NUMBER_ALREADY_EXISTS);
+        }
 
         Role role = roleRepository.findById(2L).orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
         User user = userMapper.toUser(request);
@@ -62,7 +65,7 @@ public class UserService {
     }
 
     public UserResponse updateUser(Long userId, UpdateUserRequest request){
-        if(userRepository.existsByUsername(request.getUsername())){
+        if(userRepository.existsByUsernameAndIdNot(request.getUsername(), userId)){
             throw new AppException(ErrorCode.USER_ALREADY_EXISTS);
         }
         User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
@@ -72,7 +75,15 @@ public class UserService {
             user.setPassword(passwordEncoder.encode(request.getPassword()));
         }
 
+        userRepository.save(user);
+
         return userMapper.toResponse(user);
+    }
+
+    public void updateActive(Long userId){
+        User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+        user.setActive(!user.getActive());
+        userRepository.save(user);
     }
     
     public void deleteUser(Long userId){
@@ -88,15 +99,13 @@ public class UserService {
         throw new RuntimeException("Invalid admin password");
     }
 
-    public List<UserResponse> searchUser(String keyword, Long roleId, Boolean isActive, LocalDateTime fromDate, LocalDateTime toDate){
+    public Page<UserResponse> searchUser(String keyword, Long roleId, Boolean isActive, LocalDateTime fromDate, LocalDateTime toDate, Pageable pageable){
         Role role = null;
         if(roleId != null){
             role = roleRepository.findById(roleId).orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
         }
 
-        return userRepository.searchUser(keyword, role, isActive, fromDate, toDate)
-                            .stream()
-                            .map(userMapper::toResponse)
-                            .toList();
+        return userRepository.searchUser(keyword, role, isActive, fromDate, toDate, pageable)
+                            .map(userMapper::toResponse);
     }
 }

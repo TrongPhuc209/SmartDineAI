@@ -16,6 +16,7 @@ import lombok.Setter;
 @Builder
 public class RestaurantResponse {
 
+    private Long id;
     private String name;
     private String address;
     private String phoneNumber;
@@ -24,4 +25,5 @@ public class RestaurantResponse {
     private LocalTime closeTime;
     private Boolean active;
     private LocalDateTime createAt;
+    private String imageUrl;
 }

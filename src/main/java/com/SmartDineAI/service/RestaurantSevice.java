@@ -43,23 +43,26 @@ public class RestaurantSevice {
     }
 
     public RestaurantResponse updateRestaurant(UpdateRestaurantRequest request, Long id){
-        if(restaurantRepository.existsByName(request.getName())){
-            throw new AppException(ErrorCode.RESTAURANT_NAME_ALREADY_EXISTS);
-        }
         Restaurant restaurant = restaurantRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.ID_NOT_FOUND));
         restaurantMapper.updateRestaurant(restaurant, request);
+        restaurantRepository.save(restaurant);
         return restaurantMapper.toRestaurantResponse(restaurant);
+    }
+
+    public void updateActive(Long id){
+        Restaurant restaurant = restaurantRepository.findById(id).orElseThrow();
+        restaurant.setActive(!restaurant.isActive());
+        restaurantRepository.save(restaurant);
     }
 
     public void deleteRestaurant(Long id){
         restaurantRepository.deleteById(id);
     }
 
-    public List<RestaurantResponse> searchRestaurant(String name, Boolean isActive){
-        List<Restaurant> restaurants = restaurantRepository.searchRestaurant(name, isActive);
+    public Page<RestaurantResponse> searchRestaurant(String name, Boolean active, Pageable pageable) {
 
-        return restaurants.stream()
-                .map(restaurantMapper::toRestaurantResponse)
-                .toList();
+        Page<Restaurant> restaurants = restaurantRepository.searchRestaurant(name, active, pageable);
+
+        return restaurants.map(restaurantMapper::toRestaurantResponse);
     }
 }

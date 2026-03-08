@@ -2,6 +2,8 @@ package com.SmartDineAI.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -19,8 +21,9 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long>{
         WHERE (:name IS NULL OR LOWER(r.name) LIKE LOWER(CONCAT('%', :name, '%')))
         AND (:active IS NULL OR r.active = :active)
     """)
-    List<Restaurant> searchRestaurant(
+   Page<Restaurant> searchRestaurant(
             @Param("name") String name,
-            @Param("active") Boolean active
+            @Param("active") Boolean active,
+            Pageable pageable
     );
 }

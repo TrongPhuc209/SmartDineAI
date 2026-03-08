@@ -27,7 +27,8 @@ public class SecurityConfig {
                                             "/auth/register",
                                             "/auth/introspect",
 
-                                            "/admin/**"
+                                            "/admin/**",
+                                            "/**"
 
                                         };
 

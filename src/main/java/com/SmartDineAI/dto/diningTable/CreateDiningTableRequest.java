@@ -2,17 +2,19 @@ package com.SmartDineAI.dto.diningTable;
 
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class CreateDiningTableRequest {
     private String tableCode;
-    private int capacity;
+    private Integer capacity;
     private String location;
     private Long restaurantId;
 }

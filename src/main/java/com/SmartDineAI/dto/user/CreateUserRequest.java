@@ -30,5 +30,4 @@ public class CreateUserRequest {
 
     @Digits(integer = 15, fraction = 0, message = "INVALID_FORMAT_PHONE_NUMBER")
     private String phoneNumber;
-
 }

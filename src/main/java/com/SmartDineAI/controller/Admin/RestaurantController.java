@@ -1,11 +1,11 @@
 package com.SmartDineAI.controller.Admin;
 
-import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,6 +25,7 @@ import com.SmartDineAI.service.RestaurantSevice;
 
 import jakarta.validation.Valid;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/admin/restaurants")
 public class RestaurantController {
@@ -65,6 +66,12 @@ public class RestaurantController {
     }
     
     // @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/active/{id}")
+    public void updateActive(@PathVariable Long id){
+        restaurantSevice.updateActive(id);
+    }
+    
+    // @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public void deleteRestaurant(@PathVariable Long id){
         restaurantSevice.deleteRestaurant(id);
@@ -73,10 +80,11 @@ public class RestaurantController {
     
     // @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
-    public ApiResponse<List<RestaurantResponse>> searchRestaurant(@RequestParam(required = false) String name, 
-                                                                    @RequestParam(required = false) Boolean active){
-        ApiResponse<List<RestaurantResponse>> response = new ApiResponse<>();
-        response.setResult(restaurantSevice.searchRestaurant(name, active));
+    public ApiResponse<Page<RestaurantResponse>> searchRestaurant(@RequestParam(required = false) String name, 
+                                                                    @RequestParam(required = false) Boolean active,
+                                                                    Pageable pageable){
+        ApiResponse<Page<RestaurantResponse>> response = new ApiResponse<>();
+        response.setResult(restaurantSevice.searchRestaurant(name, active, pageable));
         return response;
     }
 }
