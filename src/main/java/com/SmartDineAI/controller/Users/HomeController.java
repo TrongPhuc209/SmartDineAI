@@ -18,14 +18,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.SmartDineAI.dto.auth.ApiResponse;
-import com.SmartDineAI.dto.diningTable.CreateDiningTableRequest;
 import com.SmartDineAI.dto.diningTable.DiningTableResponse;
 import com.SmartDineAI.dto.reservation.CreateReservationRequest;
 import com.SmartDineAI.dto.reservation.ReservationResponse;
-import com.SmartDineAI.dto.restaurant.CreateRestaurantRequest;
 import com.SmartDineAI.dto.restaurant.RestaurantResponse;
 import com.SmartDineAI.dto.user.UserResponse;
-import com.SmartDineAI.entity.Restaurant;
 import com.SmartDineAI.service.DiningTableService;
 import com.SmartDineAI.service.ReservationService;
 import com.SmartDineAI.service.RestaurantSevice;
