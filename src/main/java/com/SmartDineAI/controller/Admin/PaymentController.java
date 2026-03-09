@@ -2,7 +2,7 @@ package com.SmartDineAI.controller.Admin;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,7 +28,7 @@ public class PaymentController {
     @Autowired
     private PaymentService paymentService;
 
-    // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ApiResponse<PaymentResponse> createPayment(@RequestBody @Valid CreatePaymentRequest request){
         ApiResponse<PaymentResponse> response = new ApiResponse<>();
@@ -36,7 +36,7 @@ public class PaymentController {
         return response;
     }
 
-    // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
     public ApiResponse<PaymentResponse> getPaymentById(@PathVariable Long id){
         ApiResponse<PaymentResponse> response = new ApiResponse<>();
@@ -44,7 +44,7 @@ public class PaymentController {
         return response;
     }
 
-    // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/get-all")
     public ApiResponse<Page<PaymentResponse>> getAllPayment(Pageable pageable){
         Page<PaymentResponse> result = paymentService.getAllPayment(pageable);
@@ -53,7 +53,7 @@ public class PaymentController {
                 .build();
     }
 
-    // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ApiResponse<PaymentResponse> updatePayment(@PathVariable Long id, @RequestBody @Valid UpdatePaymentRequest request){
         return ApiResponse.<PaymentResponse>builder()

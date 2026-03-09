@@ -1,0 +1,36 @@
+[33me6d1652[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mauth[m[33m)[m xong
+[33m7d8bdfa[m xong
+[33m94305cb[m xong
+[33m1a430b2[m Xong
+[33mf9f0a38[m thêm xóa reservation
+[33m1fe9ce6[m[33m ([m[1;31morigin/Auth[m[33m)[m check
+[33m6bf1a1d[m xong frontend
+[33md6f4e32[m backend done
+[33m2b40738[m xong phần tạo môi trường
+[33m3905979[m tới nghiệp vụ người dùng
+[33m60b7430[m dto payment
+[33mf76aa75[m xong CRUD reservation
+[33m3d65f00[m mapper and dto reservation
+[33me9f3299[m xong CRUD và search của: user, customer, restaurant, diningTable
+[33m8dcfd8d[m xong CRUD củ restaurant và customer thiếu search
+[33mfe0e612[m add dependncy mapStruct
+[33ma2f1834[m add entity: Customer, DiningTable, Payment, PaymentStatus, Reservatin, ReservationStatus \\ update dto.
+[33mc80699a[m add entoty: DiningTable, Customer, ReservationStatus
+[33m07b8102[m xong phần auth, bắt đầu tới tạo môi trường
+[33m5233c59[m update exception handler and add JwtAuthenticationEntryPoint, để bắt được exception Access Dinece throw 403 và 401
+[33mf518a58[m mở đầu phần phân quyền, chỉ cần copy ra các method cần thiết khác
+[33m600552e[m add securityConfig
+[33m50999fe[m import dependency spring security
+[33mb5eafec[m fix các warning trong project
+[33m078c49c[m thêm đăng nhập và cấp token
+[33me8b6a94[m auth/authlogin
+[33m4d4cf31[m add security dependency
+[33m826c752[m updata các ràng buộc trong dto
+[33maccbda2[m a new file, AppException and ErrorCode, has been created
+[33m706f7c4[m cấu trúc lại response
+[33m61b412e[m ràng buột data nhận từ request và create file GlobalExceptionHandler để xử lý exception tập trung
+[33m8190e36[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m dto\request: CreateUser, UpdateUser || Users: getById, Put, Delete
+[33mebc5e0f[m users: create, getAll
+[33m63dd0c8[m add role
+[33m93deeef[m test
+[33mda79032[m first commit

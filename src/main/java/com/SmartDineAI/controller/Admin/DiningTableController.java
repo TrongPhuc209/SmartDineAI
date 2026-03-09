@@ -31,7 +31,7 @@ public class DiningTableController {
     @Autowired
     private DiningTableService diningTableService;
 
-    // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ApiResponse<DiningTableResponse> createDiningTable(@RequestBody @Valid CreateDiningTableRequest request){
         ApiResponse<DiningTableResponse> response = new ApiResponse<>();
@@ -39,7 +39,7 @@ public class DiningTableController {
         return response;
     }
 
-    // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
     public ApiResponse<DiningTableResponse> getDiningTableById(@PathVariable Long id){
         ApiResponse<DiningTableResponse> response = new ApiResponse<>();
@@ -47,7 +47,7 @@ public class DiningTableController {
         return response;
     }
 
-    // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/get-all")
     public ApiResponse<Page<DiningTableResponse>> getAllDiningTable(Pageable pageable){
         Page<DiningTableResponse> result = diningTableService.getAllDiningTable(pageable);
@@ -56,7 +56,7 @@ public class DiningTableController {
                 .build();
     }
 
-    // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ApiResponse<DiningTableResponse> updateDiningTable(@PathVariable Long id, @RequestBody @Valid UpdateDiningTableRequest request){
         return ApiResponse.<DiningTableResponse>builder()
@@ -64,13 +64,13 @@ public class DiningTableController {
                 .build();
     }
 
-    // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/active/{id}")
     public void updateActive(@PathVariable Long id){
         diningTableService.updateActive(id);
     }
 
-    // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ApiResponse<String> deleteDiningTable(@PathVariable Long id){
         ApiResponse<String> response = new ApiResponse<>();
@@ -79,7 +79,7 @@ public class DiningTableController {
         return response;
     }
 
-    // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ApiResponse<Page<DiningTableResponse>> searchDiningTable(
             @RequestParam(required = false) String tableCode,

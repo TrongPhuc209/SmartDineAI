@@ -85,4 +85,16 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             LocalDateTime startTime,
             LocalDateTime endTime
     );
+
+
+    @Query(value="""
+    SELECT r.NAME_RTR
+    FROM reservation rs
+    JOIN restaurant r ON rs.ID_RTR = r.ID_RTR
+    WHERE rs.ID_CUS = :userId
+    """, nativeQuery = true)
+    List<String> findRestaurantHistory(Long userId);
+
+
+    List<Reservation> findByUserUsername(String username);
 }

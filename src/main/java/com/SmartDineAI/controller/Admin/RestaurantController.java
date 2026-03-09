@@ -32,7 +32,7 @@ public class RestaurantController {
     @Autowired
     RestaurantSevice restaurantSevice;
     
-    // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
     public ApiResponse<RestaurantResponse> getRestaurantById(@PathVariable Long id){
         ApiResponse<RestaurantResponse> response = new ApiResponse<>();
@@ -40,7 +40,7 @@ public class RestaurantController {
         return response;
     }
 
-    // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/get-all")
     public ApiResponse<Page<RestaurantResponse>> getAllRestaurant(Pageable pageable){
         Page<RestaurantResponse> result = restaurantSevice.getAllRestaurant(pageable);
@@ -49,7 +49,7 @@ public class RestaurantController {
                 .build();
     }
     
-    // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ApiResponse<Restaurant> createRestaurant(@RequestBody @Valid CreateRestaurantRequest request){
         ApiResponse<Restaurant> apiResponse = new ApiResponse<>();
@@ -57,7 +57,7 @@ public class RestaurantController {
         return apiResponse;
     }
     
-    // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ApiResponse<RestaurantResponse> updateRestaurant(@RequestBody @Valid UpdateRestaurantRequest request, @PathVariable Long id){
         ApiResponse<RestaurantResponse> response = new ApiResponse<>();
@@ -65,20 +65,20 @@ public class RestaurantController {
         return response;
     }
     
-    // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/active/{id}")
     public void updateActive(@PathVariable Long id){
         restaurantSevice.updateActive(id);
     }
     
-    // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public void deleteRestaurant(@PathVariable Long id){
         restaurantSevice.deleteRestaurant(id);
     }
 
     
-    // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ApiResponse<Page<RestaurantResponse>> searchRestaurant(@RequestParam(required = false) String name, 
                                                                     @RequestParam(required = false) Boolean active,

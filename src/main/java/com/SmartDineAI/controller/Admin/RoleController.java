@@ -2,6 +2,7 @@ package com.SmartDineAI.controller.Admin;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import com.SmartDineAI.dto.auth.ApiResponse;
 
@@ -24,13 +25,13 @@ public class RoleController {
     @Autowired
     private RoleService roleService;
 
-    // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public Role createRole(@RequestBody Role requestRole){
         return roleService.createRole(requestRole);
     }
 
-    // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ApiResponse<Page<Role>> getAllRoles(Pageable pageable){
         Page<Role> result = roleService.getAllRoles(pageable);
@@ -39,7 +40,7 @@ public class RoleController {
                 .build();
     }
 
-    // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
     public Role getRoleById(@PathVariable Long id){
         return roleService.getRoleById(id);

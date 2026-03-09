@@ -2,6 +2,7 @@ package com.SmartDineAI.controller.Admin;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +21,7 @@ public class ReservationStatusController {
     @Autowired
     private ReservationStatusService reservationStatusService;
 
-    // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
     public ApiResponse<ReservationStatus> getReservationStatusById(@PathVariable Long id){
         ApiResponse<ReservationStatus> response = new ApiResponse<>();
@@ -28,7 +29,7 @@ public class ReservationStatusController {
         return response;
     }
 
-    // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("get-all")
     public ApiResponse<Page<ReservationStatus>> getAllReservationStatus(Pageable pageable){
         Page<ReservationStatus> result = reservationStatusService.getAllReservationStatus(pageable);

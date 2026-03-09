@@ -49,7 +49,26 @@ public interface DiningTableRepository extends JpaRepository<DiningTable, Long>{
     );
 
     List<DiningTable> findByRestaurantIdAndCapacityGreaterThanEqual(
-        Long restaurantId,
-        Integer capacity
-);
+            Long restaurantId,
+            Integer capacity
+    );
+
+
+    @Query("""
+    SELECT dt FROM DiningTable dt
+    WHERE dt.active = true
+    AND dt.capacity >= :guestCount
+    AND NOT EXISTS (
+        SELECT r FROM Reservation r
+        WHERE r.diningTable = dt
+        AND r.reservationStatus.statusName IN ('CONFIRMED','PENDING')
+        AND r.startTime < :endTime
+        AND r.endTime > :startTime
+    )
+    """)
+    List<DiningTable> findAvailableTablesForGuests(
+            @Param("guestCount") Integer guestCount,
+            @Param("startTime") LocalDateTime startTime,
+            @Param("endTime") LocalDateTime endTime
+    );
 }

@@ -1,11 +1,14 @@
 server:
-    port: 8080
+  port: 8080
 
 spring:
-    datasource:
-        url: jdbc:mysql://localhost:3306/smart_dine_ai
-        username: root
-        password: 333333
+  datasource:
+    url: jdbc:mysql://localhost:3306/smart_dine_ai
+    username: root
+    password: 333333
 
 jwt:
-    signerKey: "SmartDineAI_SuperSecretKey_ForJWTSigning_2026_ThisKeyMustBeLongEnough_333333"
+  signerKey: "SmartDineAI_SuperSecretKey_ForJWTSigning_2026_ThisKeyMustBeLongEnough_333333"
+
+groq:
+  # apiKey: ""

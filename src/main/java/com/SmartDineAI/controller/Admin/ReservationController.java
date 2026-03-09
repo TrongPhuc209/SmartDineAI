@@ -33,7 +33,7 @@ public class ReservationController {
     @Autowired
     private ReservationService reservationService;
 
-    // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ApiResponse<ReservationResponse> createReservation(@RequestBody @Valid CreateReservationRequest request){
         ApiResponse<ReservationResponse> response = new ApiResponse<>();
@@ -41,7 +41,7 @@ public class ReservationController {
         return response;
     }
 
-    // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
     public ApiResponse<ReservationResponse> getReservationById(@PathVariable Long id){
         ApiResponse<ReservationResponse> response = new ApiResponse<>();
@@ -49,14 +49,14 @@ public class ReservationController {
         return response;
     }
 
-    // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/get-all")
     public ApiResponse<Page<ReservationResponse>> getAllReservation(Pageable pageable){
         Page<ReservationResponse> response = reservationService.getAllReservation(pageable);
         return ApiResponse.<Page<ReservationResponse>>builder().result(response).build();
     }
     
-    // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/my")
     public ApiResponse<Page<ReservationResponse>> myReservation(Pageable pageable){
         return ApiResponse.<Page<ReservationResponse>>builder()
@@ -65,7 +65,7 @@ public class ReservationController {
                                                     .build();
     } 
 
-    // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ApiResponse<ReservationResponse> updateReservation(@PathVariable Long id, @RequestBody @Valid UpdateReservationRequest request){
         ApiResponse<ReservationResponse> response = new ApiResponse<>();
@@ -73,7 +73,7 @@ public class ReservationController {
         return response;
     }
 
-    // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ApiResponse<String> deleteReservation(@PathVariable Long id){
         reservationService.deleteReservation(id);
@@ -82,7 +82,7 @@ public class ReservationController {
                 .build();
     }
 
-    // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/my/{id}")
     public ApiResponse<String> myDelete(@PathVariable Long id){
         reservationService.myDelete(id);
@@ -91,7 +91,7 @@ public class ReservationController {
                 .build();
     }
 
-    // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ApiResponse<Page<ReservationResponse>> searchReservations(
         @RequestParam(required = false) Long restaurantId,
@@ -111,7 +111,7 @@ public class ReservationController {
                                                     .build(); 
     }
     
-    // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/available")
     public Page<DiningTableResponse> findAvailableTablesByTime(
             @RequestParam LocalDateTime start, 

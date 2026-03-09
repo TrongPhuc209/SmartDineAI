@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,7 +34,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ApiResponse<User> createUser(@RequestBody @Valid CreateUserRequest request){
         ApiResponse<User> response = new ApiResponse<>();
@@ -41,7 +42,7 @@ public class UserController {
         return response;
     }
 
-    // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/get-all")
     public ApiResponse<Page<UserResponse>> getAllUsers(Pageable pageable){
         Page<UserResponse> result = userService.getAllUsers(pageable);
@@ -50,7 +51,7 @@ public class UserController {
                 .build();
     }
 
-    // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{userId}")
     public ApiResponse<UserResponse> getUserById(@PathVariable Long userId){
         ApiResponse<UserResponse> response = new ApiResponse<>();
@@ -58,7 +59,7 @@ public class UserController {
         return response;
     }
 
-    // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/my-info")
     public ApiResponse<UserResponse> getMyInfo(){
         ApiResponse<UserResponse> response = new ApiResponse<>();
@@ -66,7 +67,7 @@ public class UserController {
         return response;
     }
 
-    // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{userId}")
     public ApiResponse<UserResponse> updateUser(@PathVariable @Valid Long userId, @RequestBody @Valid UpdateUserRequest request){
         ApiResponse<UserResponse> response = new ApiResponse<>();
@@ -79,7 +80,7 @@ public class UserController {
         userService.updateActive(userId);
     }
 
-    // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{userId}")
     public ApiResponse<String> deleteUser(@PathVariable Long userId){
         ApiResponse<String> response = new ApiResponse<>();
@@ -88,7 +89,7 @@ public class UserController {
         return response;
     }
 
-    // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/all/{passwordAdmin}")
     public ApiResponse<String> deleteAllUsers(@PathVariable String passwordAdmin){
         userService.deleteAllUsers(passwordAdmin);
@@ -97,7 +98,7 @@ public class UserController {
                             .build();
     }
 
-    // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ApiResponse<Page<UserResponse>> searchUser(
             @RequestParam(required = false) String keyword,
