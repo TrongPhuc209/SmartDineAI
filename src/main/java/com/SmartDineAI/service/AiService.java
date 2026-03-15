@@ -28,131 +28,19 @@ public class AiService {
     @Value("${groq.apiKey}")
     private String API_KEY;
 
-
-
     public String chat(AiRequest request) {
 
         try {
 
             String message = request.getMessage();
 
-            Integer guestCount = extractGuestCount(message);
-
-            String restaurantName = extractRestaurantName(message);
-
-            LocalDateTime startTime = LocalDateTime.now();
-            LocalDateTime endTime = startTime.plusHours(2);
-
-            List<DiningTable> tables =
-                    diningTableRepository.findAvailableTablesForGuests(
-                            guestCount,
-                            startTime,
-                            endTime
-                    );
-
-
-            /*
-             chọn bàn tối ưu cho mỗi nhà hàng
-             capacity >= guestCount
-             và nhỏ nhất có thể
-            */
-
-            Map<String, DiningTable> bestTables = new HashMap<>();
-
-            for (DiningTable table : tables) {
-
-                String restaurant = table.getRestaurant().getName();
-
-                DiningTable current = bestTables.get(restaurant);
-
-                if (current == null ||
-                        table.getCapacity() < current.getCapacity()) {
-
-                    bestTables.put(restaurant, table);
-                }
+            // kiểm tra intent
+            if(!isReservationIntent(message)){
+                return simpleChat(message);
             }
 
-
-            /*
-             convert thành text gửi cho AI
-            */
-
-            List<String> restaurantInfo = new ArrayList<>();
-
-            for (Map.Entry<String, DiningTable> entry : bestTables.entrySet()) {
-
-                DiningTable table = entry.getValue();
-
-                restaurantInfo.add(
-                        entry.getKey()
-                        + " - bàn phù hợp: "
-                        + table.getTableCode()
-                        + " ("
-                        + table.getCapacity()
-                        + " chỗ)"
-                );
-            }
-
-
-            List<String> history = new ArrayList<>();
-
-            if (request.getUserId() != null) {
-
-                history =
-                        reservationRepository
-                                .findRestaurantHistory(request.getUserId());
-            }
-
-
-            String prompt = buildPrompt(
-                    message,
-                    guestCount,
-                    restaurantName,
-                    restaurantInfo,
-                    history
-            );
-
-
-            RestTemplate restTemplate = new RestTemplate();
-
-            HttpHeaders headers = new HttpHeaders();
-            headers.setBearerAuth(API_KEY);
-            headers.setContentType(MediaType.APPLICATION_JSON);
-
-            Map<String, Object> body = new HashMap<>();
-
-            body.put("model", "llama-3.1-8b-instant");
-
-            List<Map<String, String>> messages = new ArrayList<>();
-
-            messages.add(
-                    Map.of(
-                            "role", "user",
-                            "content", prompt
-                    )
-            );
-
-            body.put("messages", messages);
-
-            HttpEntity<Map<String, Object>> entity =
-                    new HttpEntity<>(body, headers);
-
-
-            ResponseEntity<Map> response =
-                    restTemplate.postForEntity(
-                            "https://api.groq.com/openai/v1/chat/completions",
-                            entity,
-                            Map.class
-                    );
-
-
-            Map choice =
-                    (Map) ((List) response.getBody().get("choices")).get(0);
-
-            Map messageObj =
-                    (Map) choice.get("message");
-
-            return messageObj.get("content").toString();
+            // nếu là yêu cầu đặt bàn
+            return reservationChat(request);
 
         }
         catch (Exception e) {
@@ -164,10 +52,206 @@ public class AiService {
 
     }
 
+    /*
+    =========================
+    CHAT BÌNH THƯỜNG
+    =========================
+    */
 
+    private String simpleChat(String message){
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(API_KEY);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        Map<String,Object> body = new HashMap<>();
+
+        body.put("model","llama-3.1-8b-instant");
+
+        List<Map<String,String>> messages = new ArrayList<>();
+
+        messages.add(
+                Map.of(
+                        "role","system",
+                        "content","Bạn là trợ lý AI của hệ thống đặt bàn nhà hàng TableBook. Hãy nói chuyện thân thiện, tự nhiên, ngắn gọn."
+                )
+        );
+
+        messages.add(
+                Map.of(
+                        "role","user",
+                        "content",message
+                )
+        );
+
+        body.put("messages",messages);
+
+        HttpEntity<Map<String,Object>> entity =
+                new HttpEntity<>(body,headers);
+
+        ResponseEntity<Map> response =
+                restTemplate.postForEntity(
+                        "https://api.groq.com/openai/v1/chat/completions",
+                        entity,
+                        Map.class
+                );
+
+        Map choice =
+                (Map)((List)response.getBody().get("choices")).get(0);
+
+        Map messageObj =
+                (Map)choice.get("message");
+
+        return messageObj.get("content").toString();
+    }
 
     /*
-     extract guest count
+    =========================
+    CHAT ĐẶT BÀN
+    =========================
+    */
+
+    private String reservationChat(AiRequest request){
+
+        String message = request.getMessage();
+
+        Integer guestCount = extractGuestCount(message);
+
+        String restaurantName = extractRestaurantName(message);
+
+        LocalDateTime startTime = LocalDateTime.now();
+        LocalDateTime endTime = startTime.plusHours(2);
+
+        List<DiningTable> tables =
+                diningTableRepository.findAvailableTablesForGuests(
+                        guestCount,
+                        startTime,
+                        endTime
+                );
+
+        Map<String, DiningTable> bestTables = new HashMap<>();
+
+        for (DiningTable table : tables) {
+
+            String restaurant = table.getRestaurant().getName();
+
+            DiningTable current = bestTables.get(restaurant);
+
+            if (current == null ||
+                    table.getCapacity() < current.getCapacity()) {
+
+                bestTables.put(restaurant, table);
+            }
+        }
+
+        List<String> restaurantInfo = new ArrayList<>();
+
+        for (Map.Entry<String, DiningTable> entry : bestTables.entrySet()) {
+
+            DiningTable table = entry.getValue();
+
+            restaurantInfo.add(
+                    entry.getKey()
+                            + " - bàn phù hợp: "
+                            + table.getTableCode()
+                            + " ("
+                            + table.getCapacity()
+                            + " chỗ)"
+            );
+        }
+
+        List<String> history = new ArrayList<>();
+
+        if (request.getUserId() != null) {
+
+            history =
+                    reservationRepository
+                            .findRestaurantHistory(request.getUserId());
+        }
+
+        String prompt = buildPrompt(
+                message,
+                guestCount,
+                restaurantName,
+                restaurantInfo,
+                history
+        );
+
+        return callAI(prompt);
+    }
+
+    /*
+    =========================
+    CALL AI
+    =========================
+    */
+
+    private String callAI(String prompt){
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(API_KEY);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        Map<String,Object> body = new HashMap<>();
+
+        body.put("model","llama-3.1-8b-instant");
+
+        List<Map<String,String>> messages = new ArrayList<>();
+
+        messages.add(
+                Map.of(
+                        "role","user",
+                        "content",prompt
+                )
+        );
+
+        body.put("messages",messages);
+
+        HttpEntity<Map<String,Object>> entity =
+                new HttpEntity<>(body,headers);
+
+        ResponseEntity<Map> response =
+                restTemplate.postForEntity(
+                        "https://api.groq.com/openai/v1/chat/completions",
+                        entity,
+                        Map.class
+                );
+
+        Map choice =
+                (Map)((List)response.getBody().get("choices")).get(0);
+
+        Map messageObj =
+                (Map)choice.get("message");
+
+        return messageObj.get("content").toString();
+    }
+
+    /*
+    =========================
+    INTENT DETECTION
+    =========================
+    */
+
+    private boolean isReservationIntent(String message){
+
+        message = message.toLowerCase();
+
+        return message.contains("đặt") ||
+                message.contains("bàn") ||
+                message.contains("nhà hàng") ||
+                message.contains("restaurant") ||
+                message.contains("table") ||
+                message.contains("booking");
+    }
+
+    /*
+    =========================
+    EXTRACT GUEST
+    =========================
     */
 
     private Integer extractGuestCount(String message) {
@@ -183,10 +267,10 @@ public class AiService {
         return 2;
     }
 
-
-
     /*
-     detect restaurant name from message
+    =========================
+    EXTRACT RESTAURANT
+    =========================
     */
 
     private String extractRestaurantName(String message) {
@@ -209,7 +293,11 @@ public class AiService {
         return null;
     }
 
-
+    /*
+    =========================
+    BUILD PROMPT
+    =========================
+    */
 
     private String buildPrompt(
             String userMessage,

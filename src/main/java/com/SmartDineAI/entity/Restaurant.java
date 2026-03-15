@@ -2,12 +2,14 @@ package com.SmartDineAI.entity;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.Data;
@@ -57,5 +59,11 @@ public class Restaurant {
         active = true;
         createAt = LocalDateTime.now();
     }
+
+    @OneToMany(mappedBy = "restaurant")
+    private List<FoodCategory> categories;
+
+    @OneToMany(mappedBy = "restaurant")
+    private List<Food> foods;  
 
 }

@@ -22,9 +22,17 @@ public enum ErrorCode {
     INVALID_FORMAT_RESTAURANT_PHONE_NUMBER(400, "Invalid phone number format. Must be numeric and up to 15 digits"),
     
     INVALID_TIME_RANGE(400, "Invald time range"),
+    RESTAURANT_CLOSED(400, "Reservation time is outside restaurant opening hours"),
     
     INVALID_RESERVATION_STATUS(400, "Invald reservation status"),
     INVALID_CANCEL_TIME(400, "Mealtime is about to begin"),
+
+    ACCOUNT_DISABLED(400, "Your account has been disabled."),
+    
+    CANNOT_COMPLETE(400, "Cannot complete reservation before end time."),
+    CANNOT_CANCEL(400, "Cannot cancel after reservation started."),
+    CANNOT_MARK_NO_SHOW(400, "Cannot mark no-show before reservation start time."),
+
 
     UNAUTHENTICATED(401, "Authentication required"),
     INVALID_CREDENTIALS(401, "Invalid username or password"),

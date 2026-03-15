@@ -20,7 +20,7 @@ public class RestaurantResponse {
     private String name;
     private String address;
     private String phoneNumber;
-    private String decription;
+    private String description;
     private LocalTime openTime;
     private LocalTime closeTime;
     private Boolean active;

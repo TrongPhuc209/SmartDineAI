@@ -11,4 +11,4 @@ jwt:
   signerKey: "SmartDineAI_SuperSecretKey_ForJWTSigning_2026_ThisKeyMustBeLongEnough_333333"
 
 groq:
-  # apiKey: ""
+  apiKey: ""

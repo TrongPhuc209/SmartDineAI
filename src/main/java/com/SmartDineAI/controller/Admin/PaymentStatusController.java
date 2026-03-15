@@ -1,4 +1,4 @@
-package com.SmartDineAI.controller.Admin;
+package com.SmartDineAI.controller.admin;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

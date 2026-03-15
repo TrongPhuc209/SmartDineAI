@@ -18,11 +18,15 @@ public interface RestaurantMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "active", ignore = true)
     @Mapping(target = "createAt", ignore = true)
+    @Mapping(target = "categories", ignore = true)
+    @Mapping(target = "foods", ignore = true)
     Restaurant toRestaurant(CreateRestaurantRequest request);
-
+    
     RestaurantResponse toRestaurantResponse(Restaurant restaurant);
-
+    
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createAt", ignore = true)
+    @Mapping(target = "categories", ignore = true)
+    @Mapping(target = "foods", ignore = true)
     void updateRestaurant(@MappingTarget Restaurant restaurant, UpdateRestaurantRequest request);
 }

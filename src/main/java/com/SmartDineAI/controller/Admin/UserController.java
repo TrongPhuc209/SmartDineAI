@@ -1,4 +1,4 @@
-package com.SmartDineAI.controller.Admin;
+package com.SmartDineAI.controller.admin;
 
 import java.time.LocalDateTime;
 import org.springframework.data.domain.Page;

@@ -22,7 +22,6 @@ public class AiController {
         String response = aiService.chat(request);
 
         return ResponseEntity.ok(response);
-
     }
 
 }

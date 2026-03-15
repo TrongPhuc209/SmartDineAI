@@ -1,6 +1,7 @@
 package com.SmartDineAI.service;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,10 +15,12 @@ import com.SmartDineAI.dto.diningTable.DiningTableResponse;
 import com.SmartDineAI.dto.reservation.CreateReservationRequest;
 import com.SmartDineAI.dto.reservation.ReservationResponse;
 import com.SmartDineAI.dto.reservation.UpdateReservationRequest;
+import com.SmartDineAI.dto.reservation.UpdateReservationStatusRequest;
 import com.SmartDineAI.entity.Customer;
 import com.SmartDineAI.entity.DiningTable;
 import com.SmartDineAI.entity.Reservation;
 import com.SmartDineAI.entity.ReservationStatus;
+import com.SmartDineAI.entity.Restaurant;
 import com.SmartDineAI.entity.User;
 import com.SmartDineAI.exception.AppException;
 import com.SmartDineAI.exception.ErrorCode;
@@ -89,7 +92,9 @@ public class ReservationService {
                 .orElseThrow(() -> new AppException(ErrorCode.DINING_TABLE_NOT_FOUND));
 
         validateTimeRange(request.getStartTime(), request.getEndTime());
+
         validGuestCount(request.getGuestCount(), diningTable.getCapacity());
+
         checkOverlapping(
                 null,
                 request.getDiningTableId(),
@@ -97,11 +102,32 @@ public class ReservationService {
                 request.getEndTime()
         );
 
+        // Lấy restaurant trước để kiểm tra giờ mở cửa
+        Restaurant restaurant = restaurantRepository.findById(restaurantId)
+                .orElseThrow(() -> new AppException(ErrorCode.RESTAURANT_NOT_FOUND));
+
+        // Kiểm tra thời gian đặt có nằm trong giờ mở cửa
+        validateRestaurantOpenTime(
+                request.getStartTime(),
+                request.getEndTime(),
+                restaurant.getOpenTime(),
+                restaurant.getCloseTime()
+        );
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Jwt jwt = (Jwt) authentication.getPrincipal();
         String userName = jwt.getSubject();
 
-        if(request.getPhoneNumber().isBlank()){
+        // Lấy user từ database
+        User user = userrepository.findByUsername(userName)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+
+        // Kiểm tra trạng thái tài khoản
+        if (!user.getActive()) {
+            throw new AppException(ErrorCode.ACCOUNT_DISABLED);
+        }
+
+        if (request.getPhoneNumber().isBlank()) {
             throw new AppException(ErrorCode.INVALID_FORMAT_PHONE_NUMBER);
         }
 
@@ -111,11 +137,14 @@ public class ReservationService {
 
         reservation.setCustomer(customer);
         reservation.setDiningTable(diningTable);
+
         reservation.setReservationStatus(
                 reservationStatusRepository.findById(1L).orElseThrow()
         );
-        reservation.setUser(userrepository.findByUsername(userName).orElseThrow());
-        reservation.setRestaurant(restaurantRepository.findById(restaurantId).orElseThrow());
+
+        reservation.setUser(user);
+
+        reservation.setRestaurant(restaurant);
 
         reservationRepository.save(reservation);
 
@@ -307,6 +336,21 @@ public class ReservationService {
         }
     }
 
+    private void validateRestaurantOpenTime(
+            LocalDateTime startTime,
+            LocalDateTime endTime,
+            LocalTime openTime,
+            LocalTime closeTime
+    ) {
+
+        LocalTime start = startTime.toLocalTime();
+        LocalTime end = endTime.toLocalTime();
+
+        if (start.isBefore(openTime) || end.isAfter(closeTime)) {
+            throw new AppException(ErrorCode.RESTAURANT_CLOSED);
+        }
+    }
+
     private void validateCancelReservation(Reservation reservation){
         String myStatusName = reservation.getReservationStatus().getStatusName();
         LocalDateTime myStarTime = reservation.getStartTime();
@@ -315,5 +359,53 @@ public class ReservationService {
         } if(LocalDateTime.now().isAfter(myStarTime.minusHours(1))){
             throw new AppException(ErrorCode.INVALID_CANCEL_TIME);
         } 
+    }
+
+    @Transactional
+    public void updateReservationStatus(UpdateReservationStatusRequest request) {
+
+        Reservation reservation = reservationRepository.findById(request.getReservationId())
+                .orElseThrow(() -> new AppException(ErrorCode.RESERVATION_NOT_FOUND));
+
+        ReservationStatus newStatus = reservationStatusRepository
+                .findByStatusName(request.getStatus());
+
+        LocalDateTime now = LocalDateTime.now();
+
+        String status = request.getStatus();
+
+        switch (status) {
+
+            case "COMPLETED":
+                if (now.isBefore(reservation.getEndTime())) {
+                    throw new AppException(ErrorCode.CANNOT_COMPLETE);
+                }
+                break;
+
+            case "CANCELLED_BY_CUSTOMER":
+                if (now.isAfter(reservation.getStartTime())) {
+                    throw new AppException(ErrorCode.CANNOT_CANCEL);
+                }
+                break;
+
+            case "NO_SHOW":
+                if (now.isBefore(reservation.getStartTime())) {
+                    throw new AppException(ErrorCode.CANNOT_MARK_NO_SHOW);
+                }
+                break;
+
+            case "CONFIRMED":
+            case "REJECTED":
+            case "CANCELLED_BY_ADMIN":
+            case "PENDING":
+                break;
+
+            default:
+                throw new AppException(ErrorCode.INVALID_RESERVATION_STATUS);
+        }
+
+        reservation.setReservationStatus(newStatus);
+
+        reservationRepository.save(reservation);
     }
 }

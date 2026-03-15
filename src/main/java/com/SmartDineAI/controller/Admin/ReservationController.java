@@ -1,10 +1,11 @@
-package com.SmartDineAI.controller.Admin;
+package com.SmartDineAI.controller.admin;
 
 import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,6 +23,7 @@ import com.SmartDineAI.dto.diningTable.DiningTableResponse;
 import com.SmartDineAI.dto.reservation.CreateReservationRequest;
 import com.SmartDineAI.dto.reservation.ReservationResponse;
 import com.SmartDineAI.dto.reservation.UpdateReservationRequest;
+import com.SmartDineAI.dto.reservation.UpdateReservationStatusRequest;
 import com.SmartDineAI.service.ReservationService;
 
 import jakarta.validation.Valid;
@@ -71,6 +73,14 @@ public class ReservationController {
         ApiResponse<ReservationResponse> response = new ApiResponse<>();
         response.setResult(reservationService.updateReservation(id, request));
         return response;
+    }
+
+    @PutMapping("/status")
+    public ResponseEntity<?> updateStatus(
+            @RequestBody UpdateReservationStatusRequest request
+    ){
+        reservationService.updateReservationStatus(request);
+        return ResponseEntity.ok("Status updated successfully");
     }
 
     @PreAuthorize("hasRole('ADMIN')")
